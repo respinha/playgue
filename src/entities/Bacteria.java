@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public abstract class Bacteria implements Runnable {
 
-    protected final Serializable type;
+    protected final BacteriaType type;
     protected RegionSpec regionSpec;
     protected double mortalityRate;
     protected int resistanceDegree;
@@ -39,7 +39,7 @@ public abstract class Bacteria implements Runnable {
         this.resistanceDegree = resistanceDegree;
     }
 
-    public Serializable getType() {
+    public BacteriaType getType() {
 
         return type;
     }

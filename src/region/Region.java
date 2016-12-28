@@ -4,7 +4,32 @@ package region;
  * Created by espinha on 11/21/16.
  */
 public abstract class Region {
-    public int getPopulation() {
+
+    protected double population;
+    protected double area;
+    protected RegionSpec regionSpec;
+
+    public double getEpidemyPercentage() {
+        return epidemyPercentage;
+    }
+
+    public void setEpidemyPercentage(double epidemyPercentage) {
+        this.epidemyPercentage = epidemyPercentage;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    protected double epidemyPercentage;
+    protected State state;
+    protected String name;
+
+    public double getPopulation() {
         return population;
     }
 
@@ -28,32 +53,12 @@ public abstract class Region {
         this.regionSpec = regionSpec;
     }
 
-    public double getEpidemyRatio() {
-        return epidemyRatio;
-    }
-
-    public void setEpidemyRatio(double epidemyRatio) {
-        this.epidemyRatio = epidemyRatio;
-    }
-
     public State getState() {
         return state;
     }
 
     public void setState(State state) {
         this.state = state;
-    }
-
-    protected int population;
-    protected double area;
-    protected RegionSpec regionSpec;
-
-    protected double epidemyRatio;
-    protected State state;
-    protected String name;
-
-    Region(String name) {
-        this.name = name;
     }
 
 }
