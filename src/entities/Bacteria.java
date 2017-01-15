@@ -1,6 +1,6 @@
 package entities;
 
-import region.RegionSpec;
+//import region.RegionSpec;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public abstract class Bacteria implements Runnable {
 
-    protected final BacteriaType type;
+    /*protected final BacteriaType type;
     protected RegionSpec regionSpec;
     protected double mortalityRate;
     protected int resistanceDegree;
@@ -47,5 +47,5 @@ public abstract class Bacteria implements Runnable {
     public Bacteria(BacteriaType type, int regionSpec) {
         this.type = type;
         this.regionSpec = new RegionSpec(regionSpec);
-    }
+    }*/
 }

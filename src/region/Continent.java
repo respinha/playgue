@@ -54,7 +54,7 @@ public class Continent extends Region {
                 Country country = new Country(countryName, capital, location);
                 setNeighbours(countriesList, i, country);
 
-                MutableCountry mutableCountry = new MutableCountry(country, welfare, )
+                //MutableCountry mutableCountry = new MutableCountry(country, welfare, )
             }
 
             //setRegionSpec();
@@ -90,13 +90,13 @@ public class Continent extends Region {
     private String getXMLStringValue(NodeList list, int i, String tag) {
         return ((Element) list.item(i)).getElementsByTagName(tag).item(0).getTextContent();
     }
-    public ConcurrentSkipListSet<Country> getCountries() {
+    /*public ConcurrentSkipListSet<Country> getCountries() {
         return countries;
     }
 
     public void setCountries(ConcurrentSkipListSet<Country> countries) {
         this.countries = countries;
-    }
+    }*/
 
     public int getDevelopmentDegree() {
         return developmentDegree;
