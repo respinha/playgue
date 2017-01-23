@@ -8,11 +8,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
@@ -20,7 +16,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class Continent extends Region {
 
-    private ConcurrentSkipListSet<Country> mutableCountries;
+    private ConcurrentSkipListSet<MutableCountry> mutableCountries;
     private Map<Country, List<String>> countries;  // country, country's neighbour
 
     private int developmentDegree;
@@ -28,41 +24,81 @@ public class Continent extends Region {
 
     public Continent(String countriesFile) throws IOException {
 
+        assert countriesFile != null;
+        assert name != null;
+        // todo: validate XML
+
         countries = new HashMap<>();
         mutableCountries = new ConcurrentSkipListSet<>();
-        
-        /**
-         * File format:
-         *  Country; development degree
-         */
 
+
+        Document document = null;
         try {
-            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(countriesFile);
+            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(countriesFile);
+            Element root = document.getDocumentElement(); // countries
 
-            Element root = document.getDocumentElement();
-
-            this.name = root.getElementsByTagName("Name").item(0).getTextContent();
-            NodeList countriesList = root.getElementsByTagName("Country");
-
+            this.name = root.getAttribute("region");
+            NodeList countriesList = root.getElementsByTagName("country");
             for(int i = 0; i < countriesList.getLength(); i++) {
-                String countryName  = getXMLStringValue(countriesList, i, "Name");
-                int welfare = Integer.parseInt(getXMLStringValue(countriesList, i, "Welfare"));
-                String capital = getXMLStringValue(countriesList, i, "Capital");
 
-                CountryLocation location = new CountryLocation(getXMLStringValue(countriesList, i, "Location"));
+                Element elem = (Element) countriesList.item(i);
 
-                Country country = new Country(countryName, capital, location);
-                setNeighbours(countriesList, i, country);
+                String subregion = elem.getAttribute("subregion");
 
-                //MutableCountry mutableCountry = new MutableCountry(country, welfare, )
+                double temperature = Double.parseDouble(elem.getAttribute("temperature"));
+                int welfareRating = Integer.parseInt(elem.getAttribute("welfare"));
+                int medicalRating = Integer.parseInt(elem.getAttribute("medical"));
+
+                String coordinates = elem.getAttribute("latlng");
+                CountryLocation location = new CountryLocation(coordinates);
+
+                RegionSpecification regionSpecification = new RegionSpecification(subregion, welfareRating, medicalRating, temperature);
+                Country country = new Country(regionSpecification, elem.getAttribute("name"),
+                                                    location, elem.getAttribute("capital"),
+                                                    elem.getAttribute("cca3"),
+                                                    Double.parseDouble(elem.getAttribute("population")));
+
+                String borders = elem.getAttribute("borders");
+                List<String> bordersList = borders != null ? Arrays.asList(borders.split(";")) : null;
+
+                countries.put(country, bordersList);
+                mutableCountries.add(country.getMutableCountry());
+
             }
-
-            //setRegionSpec();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
+        } catch (SAXException | ParserConfigurationException e) {
             e.printStackTrace();
         }
+
+/*
+            NodeList regionsList = root.getElementsByTagName("Region");
+
+
+            for(int i = 0; i < regionsList.getLength(); i++) {
+
+                String regionName = root.getElementsByTagName("Name").item(0).getTextContent();
+
+                int welfareRating = Integer.parseInt(getXMLStringValue(regionsList, i, "Welfare"));
+                int medicalRating = Integer.parseInt(getXMLStringValue(regionsList, i, "Medical"));
+                double temperature = Double.parseDouble(getXMLStringValue(regionsList, i, "Temperature"));
+
+                RegionSpecification regionSpecification = new RegionSpecification(regionName, welfareRating, medicalRating, temperature);
+                NodeList countriesList = root.getElementsByTagName("Country");
+
+                for(int j = 0;  j < countriesList.getLength(); j++) {
+
+                    String countryName  = getXMLStringValue(countriesList, j, "Name");
+                    String capital = getXMLStringValue(countriesList, j, "Capital");
+
+                    CountryLocation location = new CountryLocation(getXMLStringValue(countriesList, j, "Location"));
+
+                    /*Country country = new Country(regionSpecification, countryName, location, capital);
+                    setNeighbours(countriesList, i, country);
+
+                    MutableCountry mutableCountry = new MutableCountry(regionSpecification, countryName, location, capital);
+
+                    mutableCountries.add(mutableCountry);
+                }*/
+
     }
 
     private void setNeighbours(NodeList countriesList, int i, Country country) {
@@ -104,5 +140,9 @@ public class Continent extends Region {
 
     public void setDevelopmentDegree(int developmentDegree) {
         this.developmentDegree = developmentDegree;
+    }
+
+    public ConcurrentSkipListSet<MutableCountry> getMutableCountries() {
+        return mutableCountries;
     }
 }

@@ -1,10 +1,11 @@
 package region;
 
-import java.util.LinkedList;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 
 /**
  * Created by espinha on 11/21/16.
  */
+@Immutable
 public class Country extends Region {
 
     public static final String NORTH_EUROPE     = "NORTH EUROPE";
@@ -25,37 +26,50 @@ public class Country extends Region {
 
     public static final String OCEANIA          = "OCEANIA";
 
-    private CountryLocation location;
-    private String capital;
-    private int temperatureLevel;
+    private final CountryLocation location;
+    private final String capital;
+    private final double temperatureLevel;
+    private final RegionSpecification regionSpecification;
 
-    public Country(String name, String capital, CountryLocation location) {
-        this.setName(name);
+    protected final String CCA3_CODE;
 
-        this.setCapital(capital);
-        this.setLocation(location);
+    public String getCODE() {
+        return CCA3_CODE;
     }
 
+    public MutableCountry getMutableCountry() {
 
+        return new MutableCountry(regionSpecification, name, location, capital, CCA3_CODE, population);
+    }
+
+    public Country(RegionSpecification regionSpecification, String name, CountryLocation location, String capital, String cca3, double population) {
+
+        this.name = name;
+        this.temperatureLevel = regionSpecification.getTemperature();
+
+        this.capital = capital;
+        this.location = location;
+
+        this.regionSpecification = regionSpecification;
+
+        CCA3_CODE = cca3;
+
+        this.population = population;
+    }
+
+    public CountryLocation getLocation() {
+        return location;
+    }
+
+    public RegionSpecification getRegionSpecification() {
+        return regionSpecification;
+    }
 
     public String getCapital() {
         return capital;
     }
 
-    public void setCapital(String capital) {
-        this.capital = capital;
-    }
-
-
-    public void setLocation(CountryLocation location) {
-        this.location = location;
-    }
-
-    public int getTemperatureLevel() {
+    public double getTemperatureLevel() {
         return temperatureLevel;
-    }
-
-    public void setTemperatureLevel(int temperatureLevel) {
-        this.temperatureLevel = temperatureLevel;
     }
 }

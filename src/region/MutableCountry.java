@@ -2,32 +2,34 @@ package region;
 
 import entities.Bacteria;
 import entities.Cure;
-import sun.awt.image.ImageWatched;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Created by espinha on 12/12/16.
  */
-class MutableCountry extends Country {
+public class MutableCountry extends Country {
 
     private int welfareRating;          // from 1 to 10 ???
     private int medicalRating;          // from 1 to 10 ???
     private double infectedPopulation;  // percentage
     private double cureAccuracy;        // percentage
 
-    private HashMap<String, Integer> infections;
-    private LinkedList<Cure> cures;
+    private ConcurrentHashMap<String, Integer> infections;
+    private ConcurrentSkipListSet<Cure> cures;
 
-    public MutableCountry(String name, String capital, CountryLocation location, int welfareRating, int medicalRating) {
-        super(name, capital, location);
-        this.setWelfareRating(welfareRating);
-        this.setMedicalRating(medicalRating);
 
+    public MutableCountry(RegionSpecification regionSpecification, String name, CountryLocation location, String capital, String cca3, double population) {
+        super(regionSpecification, name, location, capital, cca3, population);
+
+        this.setWelfareRating(regionSpecification.getWelfareRating());
+        this.setMedicalRating(regionSpecification.getMedicalRating());
+        
         this.cureAccuracy = 0;
         this.infectedPopulation = 0;
     }
+
     public int getMedicalRating() {
         return medicalRating;
     }
@@ -68,30 +70,29 @@ class MutableCountry extends Country {
 
     }
 
-    public HashMap<String, Integer> getCurrentInfections() {
+    public ConcurrentHashMap<String, Integer> getCurrentInfections() {
         return infections;
     }
 
     public void infect(Bacteria bacteria, int nBacterias) {
 
-        String type = bacteria.getType().toString();
-        if(this.infections.get(type) == null) {
-            this.infections.put(bacteria.getType().toString(), 1);
+        if(this.infections.get(bacteria.toString()) == null) {
+            this.infections.put(bacteria.toString(), 1);
 
         } else {
 
-            int bacterias = infections.get(type);
+            int bacterias = infections.get(bacteria.toString());
 
-            infections.put(type, bacterias + nBacterias);
+            infections.put(bacteria.toString(), bacterias + nBacterias);
         }
 
     }
 
-    public void cure(Cure cure, Bacteria bacteria) {
-
+    public void applyCure(Cure cure, Bacteria bacteria) {
+        
     }
 
-    public LinkedList<Cure> getCurrentCures() {
+    public ConcurrentSkipListSet<Cure> getDevelopedCures() {
         return cures;
     }
 }

@@ -1,8 +1,11 @@
 package region;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
+
 /**
  * Created by espinha on 12/5/16.
  */
+@Immutable
 public class CountryLocation {
 
     private double latitude;
@@ -14,16 +17,8 @@ public class CountryLocation {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
     public double getLongitude() {
         return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 
     public double getRange() {
@@ -36,7 +31,7 @@ public class CountryLocation {
 
     public CountryLocation(String location) {
 
-        String[] data = location.split(";");
+        String[] data = location.split(",");
 
         latitude = Double.parseDouble(data[0]);
         longitude = Double.parseDouble(data[1]);

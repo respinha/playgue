@@ -62,4 +62,8 @@ fabric.properties
 hs_err_pid*
 
 .idea/inspectionProfiles/
-src/graphics/
+Tests/TestBoards.java
+Tests/TestInputHandler.java
+Tests/TestMapImage.java
+*.xml
+*.csv

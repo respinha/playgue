@@ -1,51 +1,46 @@
 package entities;
 
-//import region.RegionSpec;
+//import region.RegionSpecification;
 
-import java.io.Serializable;
+import common.Specification;
+import region.Region;
+import region.RegionSpecification;
 
 /**
  * Created by espinha on 11/21/16.
  */
-public abstract class Bacteria implements Runnable {
+public class Bacteria implements Runnable {
 
-    /*protected final BacteriaType type;
-    protected RegionSpec regionSpec;
+    //protected RegionSpecification regionSpecification;
     protected double mortalityRate;
     protected int resistanceDegree;
 
-    protected BacteriaSpec bacteriaSpec;
-    public RegionSpec getRegionSpec() {
-        return regionSpec;
-    }
+    protected Specification bacteriaSpec;
 
-    public void setRegionSpec(RegionSpec regionSpec) {
-        this.regionSpec = regionSpec;
+    public Bacteria(Region region, Specification spec) {
+        this.bacteriaSpec = spec;
+
     }
 
     public double getMortalityRate() {
         return mortalityRate;
     }
 
-    public void setMortalityRate(double mortalityRate) {
-        this.mortalityRate = mortalityRate;
+    public void updateMortalityRate(double factor) {
+        mortalityRate += factor;
     }
 
     public int getResistanceDegree() {
         return resistanceDegree;
     }
 
-    public void setResistanceDegree(int resistanceDegree) {
-        this.resistanceDegree = resistanceDegree;
+    public void updateResistanceDegree(int factor) {
+        this.resistanceDegree += factor;
     }
 
-    public BacteriaType getType() {
 
-        return type;
+    @Override
+    public void run() {
+
     }
-
-    public Bacteria(BacteriaType type, int regionSpec) {
-        this.type = type;
-        this.regionSpec = new RegionSpec(regionSpec);
-    }*/
 }

@@ -6,13 +6,12 @@ package entities;
  */
 public abstract class Cure implements Runnable {
 
-    protected BacteriaSpec bacteriaSpec;
-    /*protected RegionSpec regionSpec;
+    /*protected RegionSpecification regionSpecification;
     protected int resistance;
 
-    public Cure(BacteriaSpec bacteriaSpec, RegionSpec regionSpec, int resistance) {
+    public Cure(BacteriaSpec bacteriaSpec, RegionSpecification regionSpecification, int resistance) {
         this.bacteriaSpec = bacteriaSpec;
-        this.regionSpec = regionSpec;
+        this.regionSpecification = regionSpecification;
         this.resistance = resistance;
     }*/
 }

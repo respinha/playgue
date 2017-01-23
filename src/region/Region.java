@@ -7,7 +7,7 @@ public abstract class Region {
 
     protected double population;
     protected double area;
-    protected RegionSpec regionSpec;
+    protected RegionSpecification regionSpecification;
 
     public double getEpidemyPercentage() {
         return epidemyPercentage;
@@ -45,12 +45,12 @@ public abstract class Region {
         this.area = area;
     }
 
-    public RegionSpec getRegionSpec() {
-        return regionSpec;
+    public RegionSpecification getRegionSpecification() {
+        return regionSpecification;
     }
 
-    public void setRegionSpec(RegionSpec regionSpec) {
-        this.regionSpec = regionSpec;
+    public void setRegionSpecification(RegionSpecification regionSpecification) {
+        this.regionSpecification = regionSpecification;
     }
 
     public State getState() {
