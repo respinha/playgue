@@ -66,4 +66,4 @@ Tests/TestBoards.java
 Tests/TestInputHandler.java
 Tests/TestMapImage.java
 *.xml
-*.csv
+/.idea/
