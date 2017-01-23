@@ -67,3 +67,7 @@ Tests/TestInputHandler.java
 Tests/TestMapImage.java
 *.xml
 /.idea/
+/src/Tests/TestBoards.java
+/src/Tests/TestInputHandler.java
+/src/Tests/TestMapImage.java
+/Projeto.iml
