@@ -25,7 +25,4 @@ public abstract class Laboratory {
     protected synchronized MutableCountry[] getInfectedCountries(Bacteria bacteria) {
         return null;
     }
-
-
-
 }

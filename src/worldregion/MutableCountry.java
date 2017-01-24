@@ -93,7 +93,7 @@ public class MutableCountry extends Country {
         }
     }
 
-    public void applyCure(Cure cure, Bacteria bacteria) {
+    public void applyCure(Cure cure) {
         
     }
 

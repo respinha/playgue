@@ -2,6 +2,8 @@ package worldregion;
 
 import common.Globals;
 import common.Infection;
+import common.Report;
+import entities.Cure;
 import entities.Reporter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -122,7 +124,7 @@ public class Continent extends Region {
 
     }
 
-    public synchronized void lookForNews(Reporter reporter) {
+    public synchronized Report lookForNews(Reporter reporter) {
 
         while(bacteriasDetected == 0) {
             try {
@@ -133,5 +135,17 @@ public class Continent extends Region {
         }
 
         // TODO: finish
+        return new Report(null,null);
+    }
+
+    public synchronized void cureInfectedCountries(Cure cure) {
+
+        assert cure != null;
+
+        for(MutableCountry country: mutableCountries.values()) {
+            if(country.isInfected()) {
+                country.applyCure(cure);
+            }
+        }
     }
 }

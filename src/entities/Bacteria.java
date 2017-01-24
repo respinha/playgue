@@ -19,14 +19,9 @@ public class Bacteria extends BiologicalEntity {
 
     protected int resistanceDegree;
     private Infection infection;
-    private int infectionTime;
 
     public Bacteria(Continent continent, Specification specification, Laboratory laboratory) {
         super(continent, specification, laboratory);
-    }
-
-    public int getInfectionTime() {
-        return infectionTime;
     }
 
     public Infection getInfection() {
@@ -50,7 +45,6 @@ public class Bacteria extends BiologicalEntity {
     public void run() {
 
         infection = newInfection();
-        infectionTime = 0;
         while(alive) {
 
             MutableCountry country = Globals.randomCountry(continent);
@@ -64,7 +58,7 @@ public class Bacteria extends BiologicalEntity {
                 continent.spreadInfectionToBorders(newInfection(), country.getCODE());
             }
 
-            infectionTime++;
+            productionTime++;
 
             laboratory.develop(this);
         }

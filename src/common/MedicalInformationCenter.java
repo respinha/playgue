@@ -1,5 +1,7 @@
 package common;
 
+import entities.Reporter;
+import pt.ua.gboard.GBoard;
 import worldregion.Region;
 
 /**
@@ -11,11 +13,12 @@ public class MedicalInformationCenter {
 
     // organization
 
-    public MedicalInformationCenter() {
-
+    private static GBoard board;
+    public MedicalInformationCenter(GBoard board) {
+        this.board = board;
     }
 
-    public synchronized void regionUpdate(Region region) {
+    public synchronized void update(Reporter reporter, Report report) {
 
     }
 }

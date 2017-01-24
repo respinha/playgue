@@ -21,14 +21,15 @@ public class BacteriaLaboratory extends Laboratory {
     public synchronized void develop(BiologicalEntity entity) {
 
         assert entity != null;
+        assert entity.getProductionTime() > 0;
 
         Bacteria bacteria = (Bacteria) entity;
 
         assert bacteria.getInfection() != null;
-        assert bacteria.getInfectionTime() > 0;
+
 
         Infection infection = bacteria.getInfection();
-        int infectionTime = bacteria.getInfectionTime();
+        int infectionTime = bacteria.getProductionTime();
         int severity = infection.getSeverity() + ThreadLocalRandom.current().nextInt(infectionTime);
         infection.updateSeverity(severity);
 

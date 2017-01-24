@@ -11,15 +11,18 @@ public abstract class BiologicalEntity extends LiveEntity {
 
     protected final Specification specification;
     protected final Laboratory laboratory;
+    protected int productionTime;
 
     public BiologicalEntity(Continent continent, Specification specification, Laboratory laboratory)  {
         super(continent);
         this.specification = specification;
         this.laboratory = laboratory;
+
+        productionTime = 0;
     }
 
-    protected void terminate() {
-        alive = false;
+    public int getProductionTime() {
+        return productionTime;
     }
 
 }
