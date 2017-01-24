@@ -2,16 +2,11 @@ package Tests;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -32,7 +27,7 @@ public class BuildCountries {
 
     public static void main(String[] args) throws Exception {
 
-        String path = "/home/espinha/Downloads/mledoze-countries-442472d/dist/countries.xml";
+        String path = "countries.xml";
 
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(path));
         Document newDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -72,18 +67,18 @@ public class BuildCountries {
             String capital = element.getAttribute("capital");
             String[] borders = element.getAttribute("borders").split(";");
 
-            String region = element.getAttribute("region");
+            String region = element.getAttribute("worldregion");
             String subregion = element.getAttribute("subregion");
 
             System.out.println(countryName);
             System.out.println("Code: " + element.getAttribute("cca3"));
             System.out.println("Region: " + region);
-            System.out.println("Sub-region: " + subregion);
+            System.out.println("Sub-worldregion: " + subregion);
 
             Element country = newDoc.createElement("country");
             country.setAttribute("name", countryName);
             country.setAttribute("cca3", element.getAttribute("cca3"));
-            country.setAttribute("region", region);
+            country.setAttribute("worldregion", region);
             country.setAttribute("subregion", subregion);
             country.setAttribute("capital", capital);
             country.setAttribute("latlng", element.getAttribute("latlng"));

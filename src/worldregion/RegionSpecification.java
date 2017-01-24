@@ -1,4 +1,4 @@
-package region;
+package worldregion;
 
 import common.Specification;
 

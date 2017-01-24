@@ -1,6 +1,8 @@
-package region;
+package worldregion;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+
+import java.util.List;
 
 /**
  * Created by espinha on 11/21/16.
@@ -32,6 +34,7 @@ public class Country extends Region {
     private final RegionSpecification regionSpecification;
 
     protected final String CCA3_CODE;
+    private List<String> neighbours;
 
     public String getCODE() {
         return CCA3_CODE;
@@ -72,4 +75,13 @@ public class Country extends Region {
     public double getTemperatureLevel() {
         return temperatureLevel;
     }
+
+    public void setNeighbours(List<String> neighbours) {
+        this.neighbours = neighbours;
+    }
+
+    public List<String> getNeighbours() {
+        return neighbours;
+    }
+
 }

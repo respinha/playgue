@@ -1,17 +1,20 @@
 package entities;
 
 
+import common.Specification;
+import laboratory.Laboratory;
+import worldregion.Continent;
+
 /**
  * Created by espinha on 11/21/16.
  */
-public abstract class Cure implements Runnable {
+public class Cure extends BiologicalEntity {
+    public Cure(Continent continent, Specification specification, Laboratory laboratory) {
+        super(continent, specification, laboratory);
+    }
 
-    /*protected RegionSpecification regionSpecification;
-    protected int resistance;
+    @Override
+    public void run() {
 
-    public Cure(BacteriaSpec bacteriaSpec, RegionSpecification regionSpecification, int resistance) {
-        this.bacteriaSpec = bacteriaSpec;
-        this.regionSpecification = regionSpecification;
-        this.resistance = resistance;
-    }*/
+    }
 }

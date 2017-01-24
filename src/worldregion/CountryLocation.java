@@ -1,4 +1,4 @@
-package region;
+package worldregion;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 

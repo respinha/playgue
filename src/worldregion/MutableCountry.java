@@ -1,10 +1,14 @@
-package region;
+package worldregion;
 
+import common.Globals;
+import common.Infection;
 import entities.Bacteria;
 import entities.Cure;
 
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by espinha on 12/12/16.
@@ -14,11 +18,10 @@ public class MutableCountry extends Country {
     private int welfareRating;          // from 1 to 10 ???
     private int medicalRating;          // from 1 to 10 ???
     private double infectedPopulation;  // percentage
-    private double cureAccuracy;        // percentage
 
+    private final double initialPopulation;
     private ConcurrentHashMap<String, Integer> infections;
     private ConcurrentSkipListSet<Cure> cures;
-
 
     public MutableCountry(RegionSpecification regionSpecification, String name, CountryLocation location, String capital, String cca3, double population) {
         super(regionSpecification, name, location, capital, cca3, population);
@@ -26,8 +29,8 @@ public class MutableCountry extends Country {
         this.setWelfareRating(regionSpecification.getWelfareRating());
         this.setMedicalRating(regionSpecification.getMedicalRating());
         
-        this.cureAccuracy = 0;
         this.infectedPopulation = 0;
+        initialPopulation = population;
     }
 
     public int getMedicalRating() {
@@ -42,16 +45,19 @@ public class MutableCountry extends Country {
         return infectedPopulation;
     }
 
-    public void infectPopulation(double increase) {
-        this.infectedPopulation += increase;
+    public boolean isInfected() {
+        return infectedPopulation > 0;
     }
 
-    public double getCureAccuracy() {
-        return cureAccuracy;
-    }
+    public void infectPopulation(Infection infection) {
 
-    public void developCure(double accuracy) {
-        this.cureAccuracy += accuracy;
+        double healthyPopulation = initialPopulation - infectedPopulation;
+
+        int contagion = infection.getContagion();
+
+        double factor = (contagion * 0.3) + (welfareRating * 0.3) + (medicalRating * 0.4);
+        double impact = (healthyPopulation/1000) * (1 / factor);
+        this.infectedPopulation += impact;
     }
 
     public int getWelfareRating() {
@@ -85,7 +91,6 @@ public class MutableCountry extends Country {
 
             infections.put(bacteria.toString(), bacterias + nBacterias);
         }
-
     }
 
     public void applyCure(Cure cure, Bacteria bacteria) {

@@ -1,6 +1,6 @@
 TOOD:
 - add countries population
 - create media entities (which interact with info pannel)
-- create shared region which is updated by bacteria development in countries
+- create laboratory worldregion which is updated by bacteria development in countries
 - add logic to bacterias
 - start testing them with countries

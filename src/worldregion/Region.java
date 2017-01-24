@@ -1,4 +1,4 @@
-package region;
+package worldregion;
 
 /**
  * Created by espinha on 11/21/16.
