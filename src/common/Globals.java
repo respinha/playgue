@@ -1,9 +1,10 @@
 package common;
 
-import worldregion.Continent;
-import worldregion.MutableCountry;
+import region.worldregion.Continent;
+import region.worldregion.MutableCountry;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -24,28 +25,14 @@ public class Globals {
         MutableCountry[] countries = continent.getMutableCountries();
         int totalCountries = countries.length;
 
-        int countryIdx = ThreadLocalRandom.current().nextInt(totalCountries);
+        int countryIdx = new Random().nextInt(totalCountries);
 
         return countries[countryIdx];
     }
 
-    public static String[] randomBorders(MutableCountry mutableCountry) {
-
-        List<String> borders = mutableCountry.getNeighbours();
-
-        int nBorders = ThreadLocalRandom.current().nextInt(borders.size()) + 1;
-
-        String[] randomBorders = new String[nBorders];
-        for(int i = 0; i < randomBorders.length; i++) {
-            randomBorders[i] = borders.get(ThreadLocalRandom.current().nextInt(borders.size()));
-        }
-        // return cca3 code
-        return randomBorders;
-    }
-
     public static void randomPause(int min, int max) {
 
-        int interval = ThreadLocalRandom.current().nextInt(min, max);
+        int interval = new Random().nextInt(max - min) + min;
         try {
             Thread.sleep(interval);
         } catch (InterruptedException e) {

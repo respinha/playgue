@@ -15,8 +15,8 @@ public class Infection {
 
     public Infection(int[] syntoms) {
         this.syntoms = syntoms;
-        this.contagion = ThreadLocalRandom.current().nextInt(10);
-        severity = ThreadLocalRandom.current().nextInt(10);
+        this.contagion = new Random().nextInt(10) + 1;
+        severity = new Random().nextInt(10) +1;
     }
 
     public int getContagion() {

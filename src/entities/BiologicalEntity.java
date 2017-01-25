@@ -1,8 +1,8 @@
 package entities;
 
 import common.Specification;
-import laboratory.Laboratory;
-import worldregion.Continent;
+import region.laboratory.Laboratory;
+import region.worldregion.Continent;
 
 /**
  * Created by rui on 1/24/17.
@@ -13,8 +13,12 @@ public abstract class BiologicalEntity extends LiveEntity {
     protected final Laboratory laboratory;
     protected int productionTime;
 
-    public BiologicalEntity(Continent continent, Specification specification, Laboratory laboratory)  {
-        super(continent);
+    public BiologicalEntity(String name, Continent continent, Specification specification, Laboratory laboratory)  {
+        super(name, continent);
+
+        assert specification != null;
+        assert laboratory != null;
+
         this.specification = specification;
         this.laboratory = laboratory;
 

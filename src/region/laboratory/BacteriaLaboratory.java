@@ -1,11 +1,12 @@
-package laboratory;
+package region.laboratory;
 
 import common.Infection;
 import common.Specification;
 import entities.Bacteria;
 import entities.BiologicalEntity;
-import worldregion.Continent;
+import region.worldregion.Continent;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -18,11 +19,18 @@ public class BacteriaLaboratory extends Laboratory {
     }
 
     @Override
-    public synchronized void develop(BiologicalEntity entity) {
+    public synchronized int develop(BiologicalEntity entity) {
 
         assert entity != null;
         assert entity.getProductionTime() > 0;
 
+        while (time % 2 != 0) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         Bacteria bacteria = (Bacteria) entity;
 
         assert bacteria.getInfection() != null;
@@ -30,26 +38,13 @@ public class BacteriaLaboratory extends Laboratory {
 
         Infection infection = bacteria.getInfection();
         int infectionTime = bacteria.getProductionTime();
-        int severity = infection.getSeverity() + ThreadLocalRandom.current().nextInt(infectionTime);
-        infection.updateSeverity(severity);
 
-        bacteria.setInfection(infection);
+        return infection.getSeverity() + new Random().nextInt(infectionTime);
     }
 
 
     public synchronized void createBacteria(Specification specification) {
-
-        assert specification != null;
-
-
-    }
-
-    public synchronized void evolveBacteria(Bacteria bacteria) {
-
-
-    }
-
-    public synchronized void spreadBacteria(Bacteria bacteria) {
+        // todo: review purpose
 
     }
 }

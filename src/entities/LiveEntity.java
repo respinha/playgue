@@ -1,6 +1,6 @@
 package entities;
 
-import worldregion.Continent;
+import region.worldregion.Continent;
 
 /**
  * Created by rui on 1/24/17.
@@ -8,10 +8,16 @@ import worldregion.Continent;
 public abstract class LiveEntity implements Runnable{
 
     protected final Continent continent;
+    protected final String name;
     protected boolean alive;
 
-    public LiveEntity(Continent continent) {
+    public LiveEntity(String name, Continent continent) {
+        this.name = name;
         this.continent = continent;
         alive = true;
+    }
+
+    public String getName() {
+        return name;
     }
 }

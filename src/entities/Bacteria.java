@@ -1,15 +1,16 @@
 package entities;
 
-//import worldregion.RegionSpecification;
+//import region.worldregion.RegionSpecification;
 
 import common.Globals;
 import common.Infection;
 import common.Specification;
-import laboratory.Laboratory;
-import worldregion.Continent;
-import worldregion.MutableCountry;
+import region.laboratory.Laboratory;
+import region.worldregion.Continent;
+import region.worldregion.MutableCountry;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -20,47 +21,40 @@ public class Bacteria extends BiologicalEntity {
     protected int resistanceDegree;
     private Infection infection;
 
-    public Bacteria(Continent continent, Specification specification, Laboratory laboratory) {
-        super(continent, specification, laboratory);
+    public Bacteria(String name, Continent continent, Specification specification, Laboratory laboratory) {
+        super(name, continent, specification, laboratory);
     }
 
     public Infection getInfection() {
         return infection;
     }
 
-    public void setInfection(Infection infection) {
-        this.infection = infection;
-    }
-
-    public int getResistanceDegree() {
-        return resistanceDegree;
-    }
-
-    public void updateResistanceDegree(int factor) {
-        this.resistanceDegree += factor;
-    }
-
-
     @Override
     public void run() {
 
         infection = newInfection();
-        while(alive) {
+
+        int i = 0;  // DEBUG
+
+        while(i < 2) {
 
             MutableCountry country = Globals.randomCountry(continent);
 
-            alive = continent.spreadInfection(infection, country.getCODE());
+            alive = continent.spreadInfection(this, country.getCODE());
 
             Globals.randomPause(500,2000);
 
             int contagion = infection.getContagion();
-            if(ThreadLocalRandom.current().nextInt(contagion) + 1 > contagion/2) { // greater than half
-                continent.spreadInfectionToBorders(newInfection(), country.getCODE());
+            if(new Random().nextInt(contagion) + 1 > contagion/2) { // greater than half
+                continent.spreadInfectionToBorders(this, country.getCODE());
             }
 
             productionTime++;
 
-            laboratory.develop(this);
+            int development = laboratory.develop(this);
+            infection.updateSeverity(development);
+
+            i++;
         }
     }
 
@@ -68,5 +62,11 @@ public class Bacteria extends BiologicalEntity {
         int[] syntomCodes = Arrays.copyOfRange(Globals.SYNTOM_CODES, 0, 3);
 
         return new Infection(syntomCodes);
+    }
+
+    @Override
+    public boolean equals(Object b2) {
+
+        return this.getName() == ((Bacteria) b2).getName();
     }
 }

@@ -1,11 +1,11 @@
-package worldregion;
+package region.worldregion;
 
 /**
  * Created by espinha on 11/21/16.
  */
 public abstract class Region {
 
-    protected double population;
+    protected int population;
     protected double area;
     protected RegionSpecification regionSpecification;
 
@@ -26,10 +26,9 @@ public abstract class Region {
     }
 
     protected double epidemyPercentage;
-    protected State state;
     protected String name;
 
-    public double getPopulation() {
+    public int getPopulation() {
         return population;
     }
 
@@ -45,20 +44,9 @@ public abstract class Region {
         this.area = area;
     }
 
+
     public RegionSpecification getRegionSpecification() {
         return regionSpecification;
-    }
-
-    public void setRegionSpecification(RegionSpecification regionSpecification) {
-        this.regionSpecification = regionSpecification;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
 }

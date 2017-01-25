@@ -1,4 +1,4 @@
-package worldregion;
+package region.worldregion;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
@@ -42,10 +42,15 @@ public class Country extends Region {
 
     public MutableCountry getMutableCountry() {
 
-        return new MutableCountry(regionSpecification, name, location, capital, CCA3_CODE, population);
+        MutableCountry mutableCountry = new MutableCountry(regionSpecification, name, location, capital, CCA3_CODE, population);
+
+        if(neighbours != null)
+            mutableCountry.setNeighbours(neighbours);
+
+        return mutableCountry;
     }
 
-    public Country(RegionSpecification regionSpecification, String name, CountryLocation location, String capital, String cca3, double population) {
+    public Country(RegionSpecification regionSpecification, String name, CountryLocation location, String capital, String cca3, int population) {
 
         this.name = name;
         this.temperatureLevel = regionSpecification.getTemperature();
