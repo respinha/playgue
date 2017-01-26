@@ -6,38 +6,38 @@ import common.Globals;
 import common.Infection;
 import common.Specification;
 import region.laboratory.Laboratory;
-import region.worldregion.Continent;
-import region.worldregion.MutableCountry;
+import region.worldregion.EarthZone;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by espinha on 11/21/16.
  */
 public class Bacteria extends BiologicalEntity {
 
-    protected int resistanceDegree;
     private Infection infection;
+    private int lifespan = 0;
 
-    public Bacteria(String name, Continent continent, Specification specification, Laboratory laboratory) {
-        super(name, continent, specification, laboratory);
+    public Bacteria(String name, EarthZone area, Laboratory laboratory) {
+        super(name, area, laboratory);
+        lifespan = new Random().nextInt(100 - 50) + 50;
     }
 
     public Infection getInfection() {
         return infection;
     }
 
-    @Override
+    /*@Override
     public void run() {
 
         infection = newInfection();
 
         int i = 0;  // DEBUG
 
-        while(i < 2) {
+        while(i < 5) {
 
+            System.out.println(Thread.currentThread().getId() + " contagion: " + infection.getContagion());
             MutableCountry country = Globals.randomCountry(continent);
 
             alive = continent.spreadInfection(this, country.getCODE());
@@ -45,10 +45,15 @@ public class Bacteria extends BiologicalEntity {
             Globals.randomPause(500,2000);
 
             int contagion = infection.getContagion();
-            if(new Random().nextInt(contagion) + 1 > contagion/2) { // greater than half
+
+            int increase = new Random(productionTime).nextInt(contagion);
+            infection.increaseContagion(increase);
+
+            if(increase + 1 > contagion/2) { // greater than half
                 continent.spreadInfectionToBorders(this, country.getCODE());
             }
 
+            //System.out.println("ran all borders");
             productionTime++;
 
             int development = laboratory.develop(this);
@@ -56,17 +61,23 @@ public class Bacteria extends BiologicalEntity {
 
             i++;
         }
-    }
-
-    private Infection newInfection() {
-        int[] syntomCodes = Arrays.copyOfRange(Globals.SYNTOM_CODES, 0, 3);
-
-        return new Infection(syntomCodes);
-    }
+    }*/
 
     @Override
     public boolean equals(Object b2) {
 
         return this.getName() == ((Bacteria) b2).getName();
+    }
+
+    public void setInfection(Infection infection) {
+        this.infection = infection;
+    }
+
+    public int lifespan() {
+        return lifespan;
+    }
+
+    public void olden() {
+        lifespan--;
     }
 }

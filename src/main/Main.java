@@ -1,5 +1,6 @@
 package main;
 
+import common.Specification;
 import common.WorldTimer;
 import entities.Bacteria;
 import entities.BiologicalEntity;
@@ -8,8 +9,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import region.MedicalInformationCenter;
 import region.laboratory.BacteriaLaboratory;
 import region.laboratory.Laboratory;
+import region.laboratory.MedicalLaboratory;
 import region.worldregion.Continent;
 import region.worldregion.Country;
 import region.worldregion.MutableCountry;
@@ -40,18 +43,27 @@ public class Main {
 
         buildCountries("europe");
         Continent continent = new Continent("countries_parsed.xml");
+        Laboratory bLab = new BacteriaLaboratory(continent);
+        Laboratory mLab = new MedicalLaboratory(continent);
 
-        WorldTimer timerTask = new WorldTimer(continent,null,null);
+        Laboratory[] laboratories = new Laboratory[2];
+        laboratories[0] = bLab;
+        laboratories[1] = mLab;
+
+        MedicalInformationCenter center = new MedicalInformationCenter(null);
+        WorldTimer timerTask = new WorldTimer(continent,center,laboratories);
         Timer timer = new Timer(true);
 
         timer.scheduleAtFixedRate(timerTask, 0, 5*1000);
 
-        Laboratory bLab = new BacteriaLaboratory(continent);
+
 
         Bacteria[] bacterias = new Bacteria[N_BACTERIAS];
         Thread[] bacThreads = new Thread[N_BACTERIAS];
 
+
         for (int i = 0; i < N_BACTERIAS; i++) {
+
             bacterias[i] = new Bacteria("E. Coli", continent, null, bLab);
             bacThreads[i] = new Thread(bacterias[i]);
 
@@ -64,13 +76,19 @@ public class Main {
 
         timer.cancel();
 
+        int total = 0;
         for(MutableCountry country: continent.getMutableCountries()) {
 
-            if(country.isInfected())
-                System.out.println(country.getName() + ": " + country.getInfectedPopulation());
+            if(country.isInfected()) {
+                total += country.getInfectedPopulation();
+                double percent = country.getInfectedPopulation() * 100 / country.getPopulation();
+                System.out.println(country.getName() + ": " + percent);
+            }
 
             // TODO: INFECTED POPULATION IS ALWAYS ZERO
         }
+
+        System.out.println(total);
     }
 
     public static void buildCountries(String continent) throws Exception {
@@ -84,7 +102,7 @@ public class Main {
         XPath xPath = XPathFactory.newInstance().newXPath();
         XPathExpression expression = xPath.compile("/countries//country");
 
-        Set<String> subregions = new HashSet<>();
+        //Set<String> subregions = new HashSet<>();
 
         NodeList countries = (NodeList) expression.evaluate(document, XPathConstants.NODESET);
 
@@ -168,13 +186,7 @@ public class Main {
 
                 country.setAttribute("population", String.valueOf(populationMap.get(element.getAttribute("cca3"))));
 
-                subregions.add(subregion);
-
-                if(element.getAttribute("cca3").equals("FRO")) {
-                    for(String b: borders)
-                        System.out.print(b);
-                    System.out.println(borders[0].isEmpty());
-                }
+                //subregions.add(subregion);
                 if (!borders[0].isEmpty())
                     country.setAttribute("borders", element.getAttribute("borders"));
 

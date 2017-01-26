@@ -1,19 +1,19 @@
 package entities;
 
-import region.worldregion.Continent;
+import region.worldregion.EarthZone;
 
 /**
  * Created by rui on 1/24/17.
  */
-public abstract class LiveEntity implements Runnable{
+public abstract class LiveEntity {
 
-    protected final Continent continent;
+    protected final EarthZone area;
     protected final String name;
     protected boolean alive;
 
-    public LiveEntity(String name, Continent continent) {
+    public LiveEntity(String name, EarthZone area) {
         this.name = name;
-        this.continent = continent;
+        this.area = area;
         alive = true;
     }
 

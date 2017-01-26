@@ -1,11 +1,15 @@
 package region;
 
+import common.Infection;
 import common.Report;
-import entities.Reporter;
+import entities.Person;
+import entities.Population;
 import pt.ua.gboard.GBoard;
-import region.worldregion.MutableCountry;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by espinha on 11/21/16.
@@ -17,39 +21,40 @@ public class MedicalInformationCenter {
     // organization
 
     private static GBoard board;
-    private int time;
+    private boolean noWorries;
+
+    private Set<Infection> infections;
 
     public MedicalInformationCenter(GBoard board) {
         this.board = board;
-        time++;
+
+        noWorries = true;
     }
 
-    public synchronized void update(Reporter reporter, Report report) {
+    public synchronized void inform(Population population) {
 
-        assert report != null && reporter != null;
+        if(population.hasInfectedPeople())
+            noWorries = false;
 
-        while(time % 2 != 0) {
+        for(Person p: population.people()) {
+
+            infections.add(p.getInfection());
+        }
+
+        // print data to GBoard
+        notifyAll();
+    }
+
+    public synchronized Report watchOver() {
+
+        while (noWorries) {
             try {
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        Map<MutableCountry, Double> infectedCountries = report.getData();
 
-        System.out.println("Reporter: " + reporter.getName());
-        for (Map.Entry<MutableCountry, Double> entry : infectedCountries.entrySet())
-        {
-            System.out.print(entry.getKey() + " ; " + entry.getValue());
-        }
-        System.out.println("#############");
-
-        // todo: connect to gboard
-    }
-
-    public synchronized void newDay() {
-        time++;
-        if(time % 2 == 0)
-            notifyAll();
+        return new Report(infections);
     }
 }

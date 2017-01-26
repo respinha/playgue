@@ -1,52 +1,80 @@
 package region.worldregion;
 
+import common.Infection;
+import entities.Bacteria;
+import entities.Person;
+import entities.Population;
+import entities.Vaccine;
+import pt.ua.gboard.GBoard;
+import region.Location;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Created by espinha on 11/21/16.
  */
-public abstract class Region {
+public class Region {
 
-    protected int population;
-    protected double area;
-    protected RegionSpecification regionSpecification;
+    private List<EarthZone> areas;
+    private boolean noWorries;
 
-    public double getEpidemyPercentage() {
-        return epidemyPercentage;
+    public Region(GBoard board, Location[] mapZones) {
+
+        areas = new ArrayList<>();
+
+        for(int i = 0; i < mapZones.length; i++) {
+
+            EarthZone area = new EarthZone(board, mapZones[i]);
+            areas.add(area);
+        }
+
+        noWorries = true;
     }
 
-    public void setEpidemyPercentage(double epidemyPercentage) {
-        this.epidemyPercentage = epidemyPercentage;
+    public synchronized void spread(List<Bacteria> bacterias, int targetZone) {
+
+        assert bacterias != null;
+
+        EarthZone area = areas.get(targetZone);
+        area.spread(bacterias);
+
+        // population informing medical entity
+        noWorries = false;
+        notifyAll();
     }
 
-    public String getName() {
-        return name;
+    public synchronized void vaccinate(List<Vaccine> vaccines) {
+
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public synchronized boolean dailyTasks(Population population) {
 
-    protected double epidemyPercentage;
-    protected String name;
+        while (noWorries) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
-    public int getPopulation() {
-        return population;
-    }
+        for(int i = 0; i < areas.size();i++) {
 
-    public void setPopulation(int population) {
-        this.population = population;
-    }
+            population.setPopulation(areas.get(i).people(), i);
+        }
 
-    public double getArea() {
-        return area;
-    }
+        for(EarthZone area: areas) {
+            for (Person p : area.people()) {
 
-    public void setArea(double area) {
-        this.area = area;
-    }
+                if (p.isInfected())
+                    return true;
+            }
+        }
 
 
-    public RegionSpecification getRegionSpecification() {
-        return regionSpecification;
+        return false;
     }
 
 }

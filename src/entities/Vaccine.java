@@ -4,29 +4,28 @@ package entities;
 import common.Globals;
 import common.Specification;
 import region.laboratory.Laboratory;
-import region.worldregion.Continent;
+import region.worldregion.EarthZone;
 
 /**
  * Created by espinha on 11/21/16.
  */
-public class Cure extends BiologicalEntity {
+public class Vaccine extends BiologicalEntity {
 
-    private int cureAccuracy;   // from 1 to 10
     private int accuracy;
 
-    public Cure(String name, Continent continent, Specification specification, Laboratory laboratory) {
-        super(name, continent, specification, laboratory);
+    public Vaccine(String name, EarthZone area, Specification specification, Laboratory laboratory) {
+        super(name, area, specification, laboratory);
 
-        this.cureAccuracy = 1;
+        this.accuracy = 1;
     }
 
-    @Override
+    /*@Override
     public void run() {
 
 
         while (alive) {
 
-            continent.cureInfectedCountries(this);
+            area.cureInfectedCountries(this);
 
             Globals.randomPause(500,2000);
 
@@ -34,7 +33,7 @@ public class Cure extends BiologicalEntity {
 
             this.accuracy = laboratory.develop(this);
         }
-    }
+    }*/
 
     public int getAccuracy() {
         return accuracy;

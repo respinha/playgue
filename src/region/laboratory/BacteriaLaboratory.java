@@ -4,8 +4,13 @@ import common.Infection;
 import common.Specification;
 import entities.Bacteria;
 import entities.BiologicalEntity;
+import entities.Epidemy;
+import entities.LiveEntity;
 import region.worldregion.Continent;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,37 +19,52 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class BacteriaLaboratory extends Laboratory {
 
-    public BacteriaLaboratory(Continent continent) {
-        super(continent);
-    }
-
     @Override
-    public synchronized int develop(BiologicalEntity entity) {
+    public synchronized void develop(BiologicalEntity entity) {
 
         assert entity != null;
-        assert entity.getProductionTime() > 0;
 
-        while (time % 2 != 0) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        Epidemy epidemy = (Epidemy) entity;
+
+        List<Bacteria> bacterias = epidemy.bacterias();
+        
+        if(bacterias == null) {
+            bacterias = createBacterias(epidemy);
+            epidemy.setBacterias(bacterias);
+            return;
         }
-        Bacteria bacteria = (Bacteria) entity;
+        
+        for (Bacteria bacteria: bacterias) {
 
-        assert bacteria.getInfection() != null;
+            Infection infection = bacteria.getInfection();
 
+            assert infection != null;
 
-        Infection infection = bacteria.getInfection();
-        int infectionTime = bacteria.getProductionTime();
+            int severity = infection.getSeverity();
+            int lifespan = bacteria.lifespan();
+            infection.updateSeverity(severity + new Random().nextInt(lifespan));
+        }
+        
+        List<Bacteria> newBacterias = createBacterias(epidemy);
+        bacterias.addAll(newBacterias);
 
-        return infection.getSeverity() + new Random().nextInt(infectionTime);
+        epidemy.setBacterias(bacterias);
     }
 
+    private List<Bacteria> createBacterias(Epidemy epidemy) {
+        List<Bacteria> bacterias = new ArrayList<>();
+        Infection infection = new Infection();
 
-    public synchronized void createBacteria(Specification specification) {
-        // todo: review purpose
+        int max = new Random().nextInt(1000 - 500) + 500;
+        for(int i = 0; i < max; i++) {
 
+
+            Bacteria b = new Bacteria(epidemy.getName() + " bacteria", null, null);
+            b.setInfection(infection);
+
+            bacterias.add(b);
+        }
+
+        return bacterias;
     }
 }

@@ -1,9 +1,14 @@
 package region.laboratory;
 
+import common.Report;
 import entities.Bacteria;
 import entities.BiologicalEntity;
+import entities.LiveEntity;
 import region.worldregion.Continent;
 import region.worldregion.MutableCountry;
+import region.worldregion.Zone;
+
+import java.util.List;
 
 /**
  * Created by rui on 1/23/17.
@@ -14,20 +19,5 @@ import region.worldregion.MutableCountry;
 
 public abstract class Laboratory {
 
-    protected Continent continent;
-    protected
-    int time;
-
-    public Laboratory(Continent continent) {
-        this.continent = continent;
-        time = 0;
-    }
-
-    public abstract int develop(BiologicalEntity entity);
-
-    public synchronized void newDay() {
-        time++;
-        if(time % 2 == 0)
-            notifyAll();
-    }
+    public abstract void develop(BiologicalEntity entity);
 }
