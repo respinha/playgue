@@ -1,36 +1,40 @@
 package region.laboratory;
 
 import common.Infection;
-import common.Specification;
 import entities.Bacteria;
 import entities.BiologicalEntity;
-import entities.Epidemy;
-import entities.LiveEntity;
-import region.worldregion.Continent;
+import entities.Epidemic;
+import pt.ua.gboard.GBoard;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by rui on 1/24/17.
  */
 public class BacteriaLaboratory extends Laboratory {
+    public BacteriaLaboratory(GBoard board) {
+        super(board);
+    }
 
-    @Override
     public synchronized void develop(BiologicalEntity entity) {
 
         assert entity != null;
 
-        Epidemy epidemy = (Epidemy) entity;
+        /*try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
 
-        List<Bacteria> bacterias = epidemy.bacterias();
+        Epidemic epidemic = (Epidemic) entity;
+
+        List<Bacteria> bacterias = epidemic.bacterias();
         
         if(bacterias == null) {
-            bacterias = createBacterias(epidemy);
-            epidemy.setBacterias(bacterias);
+            bacterias = createBacterias(epidemic);
+            epidemic.setBacterias(bacterias);
             return;
         }
         
@@ -45,21 +49,21 @@ public class BacteriaLaboratory extends Laboratory {
             infection.updateSeverity(severity + new Random().nextInt(lifespan));
         }
         
-        List<Bacteria> newBacterias = createBacterias(epidemy);
+        List<Bacteria> newBacterias = createBacterias(epidemic);
         bacterias.addAll(newBacterias);
 
-        epidemy.setBacterias(bacterias);
+        epidemic.setBacterias(bacterias);
     }
 
-    private List<Bacteria> createBacterias(Epidemy epidemy) {
+    private List<Bacteria> createBacterias(Epidemic epidemic) {
         List<Bacteria> bacterias = new ArrayList<>();
-        Infection infection = new Infection();
+        Infection infection = new Infection("headaches");
 
         int max = new Random().nextInt(1000 - 500) + 500;
         for(int i = 0; i < max; i++) {
 
 
-            Bacteria b = new Bacteria(epidemy.getName() + " bacteria", null, null);
+            Bacteria b = new Bacteria(board, epidemic.region());
             b.setInfection(infection);
 
             bacterias.add(b);

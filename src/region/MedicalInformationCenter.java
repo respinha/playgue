@@ -2,13 +2,10 @@ package region;
 
 import common.Infection;
 import common.Report;
+import entities.Civilization;
 import entities.Person;
-import entities.Population;
 import pt.ua.gboard.GBoard;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,18 +28,18 @@ public class MedicalInformationCenter {
         noWorries = true;
     }
 
-    public synchronized void inform(Population population) {
-
-        if(population.hasInfectedPeople())
+    public synchronized void inform(Civilization civilization) {
+/*
+        if(civilization.hasInfectedPeople())
             noWorries = false;
 
-        for(Person p: population.people()) {
+        for(Person p: civilization.people()) {
 
             infections.add(p.getInfection());
         }
 
         // print data to GBoard
-        notifyAll();
+        notifyAll();*/
     }
 
     public synchronized Report watchOver() {

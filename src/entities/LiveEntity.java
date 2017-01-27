@@ -1,23 +1,16 @@
 package entities;
 
-import region.worldregion.EarthZone;
+import pt.ua.gboard.GBoard;
+import region.worldregion.EarthRegion;
 
 /**
  * Created by rui on 1/24/17.
  */
-public abstract class LiveEntity {
+public abstract class LiveEntity implements Runnable {
 
-    protected final EarthZone area;
-    protected final String name;
-    protected boolean alive;
+    protected final GBoard board;
 
-    public LiveEntity(String name, EarthZone area) {
-        this.name = name;
-        this.area = area;
-        alive = true;
-    }
-
-    public String getName() {
-        return name;
+    public LiveEntity(GBoard board) {
+        this.board = board;
     }
 }

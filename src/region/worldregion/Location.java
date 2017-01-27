@@ -1,4 +1,4 @@
-package region;
+package region.worldregion;
 
 import java.awt.*;
 
@@ -21,5 +21,12 @@ public class Location {
 
     public int getDensity() {
         return density;
+    }
+
+    public boolean equals(Object o) {
+
+        Point p = ((Location) o).getPoint();
+        return this.getPoint().getX() == p.getX()
+                && this.getPoint().getY() == p.getY();
     }
 }

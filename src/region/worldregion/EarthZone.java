@@ -1,13 +1,11 @@
 package region.worldregion;
 
 import common.Infection;
-import common.Report;
 import entities.Bacteria;
 import entities.Person;
-import entities.Population;
+import entities.Inhabitants;
 import entities.Vaccine;
 import pt.ua.gboard.GBoard;
-import region.Location;
 
 import java.awt.*;
 import java.util.*;
@@ -22,6 +20,8 @@ public class EarthZone extends Zone {
 
     public EarthZone(GBoard board, Location location) {
         super(board, location);
+
+        System.out.println(location.getPoint());
     }
 
     public void spread(List<Bacteria> bacterias) {
@@ -31,7 +31,10 @@ public class EarthZone extends Zone {
         for(Bacteria bacteria: bacterias) {
 
             Infection infection = bacteria.getInfection();
-            Person person = people.get(new Random().nextInt(people.size()));
+
+            int rand = new Random().nextInt(people.size());
+
+            Person person = people.get(rand);
             person.infect(infection);
 
             // TODO: add contagion
@@ -47,5 +50,22 @@ public class EarthZone extends Zone {
 
     public List<Person> people() {
         return people;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public boolean dailyTasks(Inhabitants inhabitants) {
+        return false;
+    }
+
+
+    public void setPeople(List<Person> people) {
+
+        assert this.people == null;
+        assert people != null;
+
+        this.people = people;
     }
 }

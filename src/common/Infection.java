@@ -8,12 +8,15 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Infection {
 
+    private final String syntom;
     //private final int[] syntoms;
     private int contagion;
     private int severity;
 
 
-    public Infection() {
+    public Infection(String syntom) {
+
+        this.syntom = syntom;
         //this.syntoms = syntoms;
         this.contagion = new Random().nextInt(10) + 1;
         severity = new Random().nextInt(10) +1;
@@ -39,6 +42,11 @@ public class Infection {
     public boolean equals(Object o) {
 
         Infection i2 = (Infection) o;
-        return getSeverity() == i2.getSeverity() && getContagion() == i2.getContagion();
+        return syntom.equalsIgnoreCase(i2.syntom());
+    }
+
+    public String syntom() {
+
+        return syntom;
     }
 }

@@ -1,22 +1,25 @@
 package entities;
 
-import common.Specification;
-import region.laboratory.Laboratory;
-import region.worldregion.EarthZone;
+import pt.ua.gboard.GBoard;
+import region.worldregion.EarthRegion;
 
 /**
- * Created by rui on 1/24/17.
+ * Created by espinha on 1/26/17.
  */
 public abstract class BiologicalEntity extends LiveEntity {
 
-    protected final Laboratory laboratory;
+    protected EarthRegion region;
 
-    public BiologicalEntity(String name, EarthZone area, Laboratory laboratory)  {
-        super(name, area);
+    public BiologicalEntity(GBoard board, EarthRegion region) {
+        super(board);
 
-        assert laboratory != null;
+        assert region != null;
 
-        this.laboratory = laboratory;
+        this.region = region;
 
+    }
+
+    public EarthRegion region() {
+        return region;
     }
 }

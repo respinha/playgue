@@ -2,9 +2,11 @@ package entities;
 
 import common.Globals;
 import common.Report;
+import pt.ua.gboard.GBoard;
 import region.MedicalInformationCenter;
 import region.laboratory.BacteriaLaboratory;
 import region.laboratory.MedicalLaboratory;
+import region.worldregion.EarthRegion;
 import region.worldregion.EarthZone;
 import region.worldregion.Zone;
 
@@ -14,16 +16,16 @@ import java.util.List;
 /**
  * Created by espinha on 1/25/17.
  */
-public class MedicalEntity extends BiologicalEntity implements Runnable {
+public class MedicalTeam extends Population {
 
     private List<Vaccine> vaccines = null;
     private Report latestReport;
-    private MedicalInformationCenter center;
+    private MedicalLaboratory laboratory;
 
-    public MedicalEntity(String name, EarthZone area, MedicalLaboratory laboratory, MedicalInformationCenter center) {
-        super(name, area, laboratory);
-        this.center = center;
+    public MedicalTeam(GBoard board, EarthRegion region, MedicalInformationCenter center, MedicalLaboratory laboratory) {
+        super(board, region, center);
     }
+
 
     public void setVaccines(List<Vaccine> vaccines) {
         Collections.copy(vaccines, this.vaccines);
@@ -43,9 +45,9 @@ public class MedicalEntity extends BiologicalEntity implements Runnable {
             latestReport = center.watchOver();
 
             // TODO: if vaccines() == null then create()
-            laboratory.develop(this);
+            vaccines = laboratory.developVaccine(vaccines);
 
-            area.vaccinate(vaccines);
+            region.vaccinate(vaccines);
 
             running = latestReport != null;
             Globals.metronome().sync();

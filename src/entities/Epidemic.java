@@ -2,9 +2,13 @@ package entities;
 
 import common.Globals;
 import common.Infection;
+import pt.ua.gboard.GBoard;
 import region.laboratory.BacteriaLaboratory;
+import region.worldregion.EarthRegion;
 import region.worldregion.EarthZone;
+import region.worldregion.Location;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,20 +17,37 @@ import java.util.Random;
 /**
  * Created by espinha on 1/25/17.
  */
-public class Epidemy extends BiologicalEntity implements Runnable {
+public class Epidemic extends BiologicalEntity implements Runnable {
 
+    private final BacteriaLaboratory laboratory;
     private List<Bacteria> bacterias;
-    public Epidemy(String name, EarthZone area, BacteriaLaboratory laboratory) {
-        super(name, area,laboratory);
+    private Location location;
+
+    public Epidemic(GBoard board, EarthRegion region, BacteriaLaboratory laboratory, Location location) {
+        super(board, region);
+
+        this.laboratory = laboratory;
+
+        this.location = location;
+        System.out.println("Started thread: " + Thread.currentThread().getId());
     }
+
 
     @Override
     public void run() {
 
         boolean running = true;
+
+
         while(running) {
+
             laboratory.develop(this);
-            area.spread(bacterias);
+            System.out.println("cá em casa ta-se ta-se!");
+            region.spread(bacterias, location);
+
+            System.out.println("Running " + Thread.currentThread().getId());
+            /*
+
 
             for(Bacteria bacteria: bacterias) {
 
@@ -36,7 +57,7 @@ public class Epidemy extends BiologicalEntity implements Runnable {
                     bacterias.remove(bacteria);
             }
 
-            running = bacterias.size() > 0;
+            running = bacterias.size() > 0;*/
             Globals.metronome().sync();
         }
         /**
@@ -92,6 +113,9 @@ public class Epidemy extends BiologicalEntity implements Runnable {
     }
 
     public void setBacterias(List<Bacteria> bacterias) {
-        Collections.copy(bacterias, this.bacterias);
+        if(this.bacterias == null)
+            this.bacterias = bacterias;
+        else
+            Collections.copy(bacterias, this.bacterias);
     }
 }

@@ -1,11 +1,12 @@
 package entities;
 
-//import region.worldregion.RegionSpecification;
+//import earthRegion.worldregion.RegionSpecification;
 
 import common.Globals;
 import common.Infection;
-import common.Specification;
+import pt.ua.gboard.GBoard;
 import region.laboratory.Laboratory;
+import region.worldregion.EarthRegion;
 import region.worldregion.EarthZone;
 
 import java.util.Arrays;
@@ -19,8 +20,9 @@ public class Bacteria extends BiologicalEntity {
     private Infection infection;
     private int lifespan = 0;
 
-    public Bacteria(String name, EarthZone area, Laboratory laboratory) {
-        super(name, area, laboratory);
+    public Bacteria(GBoard board, EarthRegion region) {
+        super(board, region);
+
         lifespan = new Random().nextInt(100 - 50) + 50;
     }
 
@@ -66,7 +68,7 @@ public class Bacteria extends BiologicalEntity {
     @Override
     public boolean equals(Object b2) {
 
-        return this.getName() == ((Bacteria) b2).getName();
+        return infection.equals(b2);
     }
 
     public void setInfection(Infection infection) {
@@ -79,5 +81,10 @@ public class Bacteria extends BiologicalEntity {
 
     public void olden() {
         lifespan--;
+    }
+
+    @Override
+    public void run() {
+
     }
 }

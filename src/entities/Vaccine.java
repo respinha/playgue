@@ -1,9 +1,10 @@
 package entities;
 
 
-import common.Globals;
-import common.Specification;
+import common.Infection;
+import pt.ua.gboard.GBoard;
 import region.laboratory.Laboratory;
+import region.worldregion.EarthRegion;
 import region.worldregion.EarthZone;
 
 /**
@@ -11,12 +12,23 @@ import region.worldregion.EarthZone;
  */
 public class Vaccine extends BiologicalEntity {
 
+    private final Infection infection;
     private int accuracy;
 
-    public Vaccine(String name, EarthZone area, Specification specification, Laboratory laboratory) {
-        super(name, area, specification, laboratory);
+    public Vaccine(GBoard board, EarthRegion region, Infection infection) {
+        super(board, region);
 
-        this.accuracy = 1;
+        assert infection != null;
+
+        this.infection = infection;
+    }
+
+    public void heal(Person person) {
+
+        if(!infection.equals(person.getInfection())) {
+
+            // todo: implement
+        }
     }
 
     /*@Override
@@ -37,5 +49,10 @@ public class Vaccine extends BiologicalEntity {
 
     public int getAccuracy() {
         return accuracy;
+    }
+
+    @Override
+    public void run() {
+
     }
 }

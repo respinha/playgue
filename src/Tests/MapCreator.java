@@ -17,13 +17,13 @@ public class MapCreator {
     public static void main(String[] args) throws IOException {
 
         gboard.pushInputHandler(new TestInputHandler());
-        singleIslandMap(gboard);
+        drawIslandMap(gboard);
     }
 
-    public static void singleIslandMap(GBoard board) throws IOException {
+    public static void drawIslandMap(GBoard board) throws IOException {
 
         BufferedReader reader = new BufferedReader(new FileReader("single_island.txt"));
-        String prevLine, line;
+        String line;
 
         int l = 0;
         while((line = reader.readLine()) != null){
