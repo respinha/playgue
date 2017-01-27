@@ -30,6 +30,11 @@ public class MedicalLaboratory extends Laboratory {
 
     public List<Vaccine> developVaccine(List<Vaccine> vaccines) {
 
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return vaccines;
     }
 }

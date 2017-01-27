@@ -22,13 +22,12 @@ import java.util.zip.ZipFile;
 /**
  * Created by espinha on 12/5/16.
  */
-public class GMap {
+public class Main {
 
-
+    static final int seaSymbol = 0;
+    static final int[] earthSymbols = {1,2,3,4,5};
     public static void main(String[] args) {
 
-        final int seaSymbol = 0;
-        final int[] earthSymbols = {1,2,3,4,5};
         final GBoard gboard = new GBoard("Map", 20, 39, 1); //lines, columns, layers
 
 
@@ -67,7 +66,7 @@ public class GMap {
                 Color color;
                 switch (number){
 
-                    case 0: color = Color.BLUE;
+                    case seaSymbol: color = Color.BLUE;
                         break;
                     case 1: color = Color.orange;
                         break;
@@ -82,15 +81,7 @@ public class GMap {
                     locations.add(new Location(new Point(i, l), number));
 
                 ValuedFilledGelem gelem = new ValuedFilledGelem(color, 100, number);
-
-                Gelem tmp = (Gelem) gelem;
-
-                ValuedFilledGelem tmp2 = (ValuedFilledGelem) tmp;
-                if(tmp2.cellValue() > 0)
-                    System.out.println("AI Q PICA");
-
                 board.draw(gelem, l, i, 0);
-
             }
 
             l++;

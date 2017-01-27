@@ -30,7 +30,7 @@ public class Inhabitants extends LiveEntity {
         Location location = area.getLocation();
         this.density = location.getDensity();
 
-        int max = (int) Math.pow(10,density);
+        int max = (int) Math.pow(10,density+1);
         people = new ArrayList<>(max);
 
         for(int i = 0; i < max; i++) {
@@ -38,6 +38,10 @@ public class Inhabitants extends LiveEntity {
             int stamina = new Random().nextInt(100) +1;
             people.add(new Person("Person " + i, area, stamina));
         }
+    }
+
+    public int density() {
+        return density;
     }
 
     @Override

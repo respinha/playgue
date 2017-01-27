@@ -29,4 +29,26 @@ public class Location {
         return this.getPoint().getX() == p.getX()
                 && this.getPoint().getY() == p.getY();
     }
+
+    public double x() {
+        return getPoint().getX();
+    }
+
+    public double y() {
+        return getPoint().getY();
+    }
+
+    public boolean isBorder(Location location) {
+
+        if(this.equals(location)) return false;
+
+        double verticalDiff = Math.abs(y() - location.y());
+        double horizontalDiff = Math.abs(x() - location.x());
+
+        if(horizontalDiff <= 1 && verticalDiff <= 1) {
+            return true;
+        }
+
+        return false;
+    }
 }

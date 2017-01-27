@@ -3,9 +3,17 @@ package region;
 import common.Infection;
 import common.Report;
 import entities.Civilization;
+import entities.Inhabitants;
 import entities.Person;
 import pt.ua.gboard.GBoard;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 
 /**
@@ -22,13 +30,32 @@ public class MedicalInformationCenter {
 
     private Set<Infection> infections;
 
-    public MedicalInformationCenter(GBoard board) {
+    private BufferedWriter writer;
+    public MedicalInformationCenter(GBoard board) throws IOException {
         this.board = board;
 
         noWorries = true;
+
+        writer = new BufferedWriter(new FileWriter("log.txt"));
     }
 
-    public synchronized void inform(Civilization civilization) {
+    public synchronized void inform(Civilization civilization) throws IOException {
+
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //if(noWorries) {
+        noWorries = false;
+        notify();
+        //}
+
+        for(Inhabitants inhabitants: civilization.people()) {
+            for(Person person: inhabitants.people()) {
+                infections.add(person.getInfection());
+            }
+        }
 /*
         if(civilization.hasInfectedPeople())
             noWorries = false;
@@ -40,6 +67,7 @@ public class MedicalInformationCenter {
 
         // print data to GBoard
         notifyAll();*/
+
     }
 
     public synchronized Report watchOver() {
@@ -51,6 +79,8 @@ public class MedicalInformationCenter {
                 e.printStackTrace();
             }
         }
+
+        noWorries = true;
 
         return new Report(infections);
     }

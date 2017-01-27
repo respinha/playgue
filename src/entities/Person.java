@@ -34,7 +34,7 @@ public class Person  {
     }
     
     public void infect(Infection infection) {
-        infection = infection;
+        this.infection = infection;
     }
 
     public boolean isInfected() {

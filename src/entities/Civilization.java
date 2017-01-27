@@ -6,6 +6,7 @@ import region.MedicalInformationCenter;
 import region.worldregion.EarthRegion;
 import region.worldregion.EarthZone;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,13 +48,19 @@ public class Civilization extends Population {
         do {
             epidemic = region.dailyTasks(this);
 
-            if(epidemic) center.inform(this);
+            if(epidemic) {
+                try {
+                    center.inform(this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
             livingPeople = false;
             for(int i = 0; i < civilization.size(); i++) {
 
                 Inhabitants inhabitants = civilization.get(i);
-                List<Person> people = civilization.get(i).people();
+                List<Person> people = inhabitants.people();
                 for(int j = 0; j < people.size(); j++) {
                     people.get(j).decreaseStamina();
                 }

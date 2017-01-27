@@ -9,10 +9,8 @@ import region.worldregion.EarthZone;
 import region.worldregion.Location;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by espinha on 1/25/17.
@@ -21,14 +19,16 @@ public class Epidemic extends BiologicalEntity implements Runnable {
 
     private final BacteriaLaboratory laboratory;
     private List<Bacteria> bacterias;
-    private Location location;
+    private Set<Location> locations;
 
     public Epidemic(GBoard board, EarthRegion region, BacteriaLaboratory laboratory, Location location) {
         super(board, region);
 
         this.laboratory = laboratory;
 
-        this.location = location;
+        this.locations = new LinkedHashSet<>();
+        locations.add(location);
+
         System.out.println("Started thread: " + Thread.currentThread().getId());
     }
 
@@ -42,22 +42,21 @@ public class Epidemic extends BiologicalEntity implements Runnable {
         while(running) {
 
             laboratory.develop(this);
-            System.out.println("cá em casa ta-se ta-se!");
-            region.spread(bacterias, location);
 
-            System.out.println("Running " + Thread.currentThread().getId());
-            /*
+            region.spread(this, locations);
 
+            System.out.println("Epidemic borders: " + locations.size());
+            System.out.println("Epidemic bacterias:" + bacterias.size());
 
             for(Bacteria bacteria: bacterias) {
 
                 bacteria.olden();   // decrease lifespan
-
                 if (bacteria.lifespan() == 0)
                     bacterias.remove(bacteria);
             }
 
-            running = bacterias.size() > 0;*/
+            running = bacterias.size() > 0;
+
             Globals.metronome().sync();
         }
         /**
@@ -117,5 +116,9 @@ public class Epidemic extends BiologicalEntity implements Runnable {
             this.bacterias = bacterias;
         else
             Collections.copy(bacterias, this.bacterias);
+    }
+
+    public void expand(List<Location> borders) {
+        locations.addAll(borders);
     }
 }

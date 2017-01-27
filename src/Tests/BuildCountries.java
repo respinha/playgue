@@ -72,8 +72,8 @@ public class BuildCountries {
 
             System.out.println(countryName);
             System.out.println("Code: " + element.getAttribute("cca3"));
-            System.out.println("Region: " + region);
-            System.out.println("Sub-region.worldregion: " + subregion);
+            System.out.println("EarthRegion: " + region);
+            System.out.println("Sub-earthRegion.worldregion: " + subregion);
 
             Element country = newDoc.createElement("country");
             country.setAttribute("name", countryName);
