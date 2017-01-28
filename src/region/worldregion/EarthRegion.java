@@ -11,6 +11,7 @@ import java.util.*;
 public class EarthRegion extends WorldRegion{
 
     private List<EarthZone> areas;
+    private Set<EarthZone> medicalKnownAreas;
     private boolean noWorries;
     private boolean civilizationAwake;
 
@@ -24,6 +25,8 @@ public class EarthRegion extends WorldRegion{
             EarthZone area = new EarthZone(board, mapZones.get(i));
             areas.add(area);
         }
+
+        medicalKnownAreas = new LinkedHashSet<>();
 
         noWorries = true;
 
@@ -44,18 +47,22 @@ public class EarthRegion extends WorldRegion{
         }
 
         // DEBUG #########
-        int sum = 0;
-        for(EarthZone area: areas)
-            for (Person person: area.people())
-                if(person.isInfected())
+        int sum = 0, totalSum = 0;
+        for(EarthZone area: areas) {
+            for (Person person : area.people()) {
+                totalSum++;
+                if (person.isInfected())
                     sum++;
+            }
+        }
 
-        System.out.println("total infection: " + sum);
+        System.out.println("total infected: " + sum);
+        System.out.println("total: " + totalSum);
         // ##############
 
 
 
-        List<Bacteria> bacterias = epidemic.bacterias();
+        Vector<Bacteria> bacterias = epidemic.bacterias();
         //civilizationAwake = false;
 
         //Location location = locations.iterator().next();
@@ -71,7 +78,7 @@ public class EarthRegion extends WorldRegion{
                 boolean found = area.getLocation().equals(location);
                 if (found) {
 
-                    System.out.println(area.getLocation());
+                    //System.out.println(area.getLocation());
                     if (area.infected()) {
                         List<Location> borders = spreadBorders(area, bacterias);
                         epidemic.expand(borders);
@@ -82,33 +89,17 @@ public class EarthRegion extends WorldRegion{
             }
         }
 
-        /*Iterator<Location> locationIterator = locations.iterator();
+        Iterator<Bacteria> it = bacterias.iterator();
 
-        for(EarthZone area: areas) {
+        while(it.hasNext()) {
 
-            int rand = new Random().nextInt(2);
-
-            while(locationIterator.hasNext() && rand > 0) {
-
-
-                Location location = locationIterator.next();
-                System.out.println("Loc " + location.getPoint());
-                System.out.println("Loc2 " + area.getLocation().getPoint());
-                boolean found = area.getLocation().equals(location);
-
-                if(found) System.out.println("scanning...");
-                if (found) {
-
-                    System.out.println(area.getLocation());
-                    if(area.infected()) {
-                        List<Location> borders = spreadBorders(area, bacterias);
-                        epidemic.expand(borders);
-                    }
-
-                    //System.out.println(bacterias);
-                }
+            Bacteria bacteria = it.next();
+            bacteria.olden();
+            if (bacteria.lifespan() == 0) {
+                it.remove();
+                System.out.println("death");
             }
-        }*/
+        }
 
         noWorries = false;
         notify();
@@ -121,13 +112,12 @@ public class EarthRegion extends WorldRegion{
      * @param bacterias
      * @return list of new zones infected
      */
-    private List<Location> spreadBorders(EarthZone targetArea, List<Bacteria> bacterias) {
+    private List<Location> spreadBorders(EarthZone targetArea, Vector<Bacteria> bacterias) {
 
         List<Location> borders = new ArrayList<>();
         Location areaLocation = targetArea.getLocation();
 
-
-        System.out.println("target:" + areaLocation.x() + " " + areaLocation.y());
+        //System.out.println("target:" + areaLocation.x() + " " + areaLocation.y());
 
         // iterating through
         for(EarthZone area: areas) {
@@ -149,8 +139,61 @@ public class EarthRegion extends WorldRegion{
         return borders;
     }
 
-    public synchronized void vaccinate(List<Vaccine> vaccines) {
+    public synchronized boolean vaccinate(NursingTeam team) {
 
+
+        boolean teamIsRequired = false;
+
+        if(medicalKnownAreas.size() == 0) {
+
+            List<EarthZone> infectedZones = new ArrayList<>();
+            areas.forEach(
+                    area -> {
+                        if(area.infected())
+                            infectedZones.add(area);
+                    }
+            );
+
+            EarthZone target = infectedZones.get(new Random().nextInt(infectedZones.size()));
+            medicalKnownAreas.add(target);
+        }
+
+        Map<String,Vaccine> vaccines = team.vaccines();
+
+        Set<EarthZone> borders = new LinkedHashSet<>();
+
+        for(EarthZone target: medicalKnownAreas) {
+
+            if(target.infected()) {
+                teamIsRequired = true;
+                target.vaccinate(vaccines);
+            }
+
+            Location targetLocation = target.getLocation();
+
+            for(EarthZone area: areas) {
+
+                if(area.infected()) {
+
+                    teamIsRequired = true;
+
+                    Location location = area.getLocation();
+                    if(location.isBorder(targetLocation)) {
+                        int rand = new Random().nextInt(2);
+                        if(rand > 0) {
+
+                            borders.add(area);
+                            area.vaccinate(vaccines);
+                        }
+                    }
+                }
+
+            }
+        }
+
+        medicalKnownAreas.addAll(borders);
+
+        return teamIsRequired;
     }
 
     public synchronized void startDay(List<Inhabitants> inhabitants) {
@@ -181,12 +224,6 @@ public class EarthRegion extends WorldRegion{
             }
         }
 
-        System.out.println("Chegueeeeeeeeei");
-        try {
-            wait();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         boolean epidemic = false;
         for(int i = 0; i < areas.size();i++) {
 
@@ -211,5 +248,18 @@ public class EarthRegion extends WorldRegion{
         for(int i = 0; i < civilization.people().size(); i++) {
             areas.get(i).setPeople(civilization.people().get(i));
         }
+    }
+
+    public synchronized void test() {
+        System.out.println("I entered the test.");
+
+        try {
+            while (true)
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("I shouldn't be doing this");
     }
 }

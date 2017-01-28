@@ -1,19 +1,13 @@
 package region;
 
 import common.Infection;
-import common.Report;
-import entities.Civilization;
-import entities.Inhabitants;
-import entities.Person;
+import entities.*;
 import pt.ua.gboard.GBoard;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -26,7 +20,7 @@ public class MedicalInformationCenter {
     // organization
 
     private static GBoard board;
-    private boolean noWorries;
+    private boolean statusUpdated;
 
     private Set<Infection> infections;
 
@@ -34,45 +28,38 @@ public class MedicalInformationCenter {
     public MedicalInformationCenter(GBoard board) throws IOException {
         this.board = board;
 
-        noWorries = true;
+        statusUpdated = false;
 
+        infections = new LinkedHashSet<>();
+        
         writer = new BufferedWriter(new FileWriter("log.txt"));
     }
 
     public synchronized void inform(Civilization civilization) throws IOException {
 
-        try {
+        civilization.people().forEach(
+                inhabitants -> inhabitants.people().forEach(
+                        person -> {
+                            if(person.isInfected())
+                                infections.add(person.getInfection());
+                        }
+                )
+        );
+
+        statusUpdated = true;
+        notify();
+    }
+
+    public synchronized void watchOver(NursingTeam team) {
+
+        /*try {
             wait();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-        //if(noWorries) {
-        noWorries = false;
-        notify();
-        //}
-
-        for(Inhabitants inhabitants: civilization.people()) {
-            for(Person person: inhabitants.people()) {
-                infections.add(person.getInfection());
-            }
-        }
-/*
-        if(civilization.hasInfectedPeople())
-            noWorries = false;
-
-        for(Person p: civilization.people()) {
-
-            infections.add(p.getInfection());
-        }
-
-        // print data to GBoard
-        notifyAll();*/
-
-    }
-
-    public synchronized Report watchOver() {
-
-        while (noWorries) {
+        }*/
+        
+        while (!statusUpdated) {
+            
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -80,8 +67,14 @@ public class MedicalInformationCenter {
             }
         }
 
-        noWorries = true;
+        System.out.println("Woke up a doctor");
 
-        return new Report(infections);
+        for(Infection infection: infections) {
+
+            team.newInfection(infection);
+        }
+
+        statusUpdated = false;
+
     }
 }

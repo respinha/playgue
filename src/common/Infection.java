@@ -9,33 +9,26 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Infection {
 
     private final String syntom;
-    //private final int[] syntoms;
-    private int contagion;
+    private final String[] syntoms = {"headache", "vomits", "nosebleed","heart failure"};
+
     private int severity;
 
 
-    public Infection(String syntom) {
+    public Infection() {
 
-        this.syntom = syntom;
+        this.syntom = syntoms[new Random().nextInt(syntoms.length)];
         //this.syntoms = syntoms;
-        this.contagion = new Random().nextInt(10) + 1;
         severity = new Random().nextInt(10) +1;
-    }
 
-    public int getContagion() {
-        return contagion;
-    }
+        assert syntom != null && !syntom.isEmpty() && severity <= 10 && severity >= 1;
 
+    }
     public int getSeverity() {
         return severity;
     }
 
     public void updateSeverity(int severity) {
         this.severity = severity;
-    }
-
-    public void increaseContagion(int increase) {
-        contagion += increase;
     }
 
     @Override

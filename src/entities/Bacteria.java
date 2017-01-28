@@ -65,12 +65,6 @@ public class Bacteria extends BiologicalEntity {
         }
     }*/
 
-    @Override
-    public boolean equals(Object b2) {
-
-        return infection.equals(b2);
-    }
-
     public void setInfection(Infection infection) {
         this.infection = infection;
     }

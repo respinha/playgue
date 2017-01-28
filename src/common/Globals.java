@@ -15,7 +15,7 @@ public class Globals {
         // src: http://sweet.ua.pt/mos/pt.ua.concurrent/index.xhtml
 
         if(metronome == null)
-            return new Metronome(3500);
+            return new Metronome(1500);
         return metronome;
     }
 

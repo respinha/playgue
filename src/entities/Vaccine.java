@@ -2,57 +2,45 @@ package entities;
 
 
 import common.Infection;
-import pt.ua.gboard.GBoard;
-import region.laboratory.Laboratory;
-import region.worldregion.EarthRegion;
-import region.worldregion.EarthZone;
 
 /**
  * Created by espinha on 11/21/16.
  */
-public class Vaccine extends BiologicalEntity {
+public class Vaccine {
 
     private final Infection infection;
-    private int accuracy;
+    private double versatility;
 
-    public Vaccine(GBoard board, EarthRegion region, Infection infection) {
-        super(board, region);
+    public Vaccine(Infection infection) {
 
         assert infection != null;
 
         this.infection = infection;
+
+        versatility = Math.random() * 0.75;
     }
 
-    public void heal(Person person) {
+    public boolean equals(Object o) {
 
-        if(!infection.equals(person.getInfection())) {
+        assert ((Vaccine) o).infection() != null;
 
-            // todo: implement
-        }
+        System.out.println(infection.syntom());
+        System.out.println(((Vaccine) o).infection().syntom());
+        return this.infection.equals(((Vaccine) o).infection());
     }
 
-    /*@Override
-    public void run() {
-
-
-        while (alive) {
-
-            area.cureInfectedCountries(this);
-
-            Globals.randomPause(500,2000);
-
-            productionTime++;
-
-            this.accuracy = laboratory.develop(this);
-        }
-    }*/
-
-    public int getAccuracy() {
-        return accuracy;
+    public Infection infection() {
+        return infection;
     }
 
-    @Override
-    public void run() {
+    public double getVersatility() {
+        return versatility;
+    }
 
+    public void develop() {
+
+        double upgrade = Math.random() * 0.2;
+        if(versatility + upgrade < 1.0)
+            versatility += upgrade;
     }
 }

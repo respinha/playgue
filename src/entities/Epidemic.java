@@ -18,7 +18,7 @@ import java.util.List;
 public class Epidemic extends BiologicalEntity implements Runnable {
 
     private final BacteriaLaboratory laboratory;
-    private List<Bacteria> bacterias;
+    private Vector<Bacteria> bacterias;
     private Set<Location> locations;
 
     public Epidemic(GBoard board, EarthRegion region, BacteriaLaboratory laboratory, Location location) {
@@ -43,17 +43,15 @@ public class Epidemic extends BiologicalEntity implements Runnable {
 
             laboratory.develop(this);
 
+            int size = bacterias.size();
+
             region.spread(this, locations);
 
-            System.out.println("Epidemic borders: " + locations.size());
-            System.out.println("Epidemic bacterias:" + bacterias.size());
+            //System.out.println("Epidemic borders: " + locations.size());
+            //System.out.println("Epidemic bacterias:" + bacterias.size());
 
-            for(Bacteria bacteria: bacterias) {
-
-                bacteria.olden();   // decrease lifespan
-                if (bacteria.lifespan() == 0)
-                    bacterias.remove(bacteria);
-            }
+            if(size > bacterias.size())
+                System.out.println("There's only a matter of me, in a matter of speaking I'm dead");
 
             running = bacterias.size() > 0;
 
@@ -107,11 +105,11 @@ public class Epidemic extends BiologicalEntity implements Runnable {
         }*/
     }
 
-    public List<Bacteria> bacterias() {
+    public Vector<Bacteria> bacterias() {
         return bacterias;
     }
 
-    public void setBacterias(List<Bacteria> bacterias) {
+    public void setBacterias(Vector<Bacteria> bacterias) {
         if(this.bacterias == null)
             this.bacterias = bacterias;
         else

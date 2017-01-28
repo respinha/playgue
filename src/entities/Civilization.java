@@ -28,7 +28,7 @@ public class Civilization extends Population {
 
         for(EarthZone area: region.getAreas()) {
 
-            Inhabitants inhabitants = new Inhabitants(board, area);
+            Inhabitants inhabitants = new Inhabitants(area);
             civilization.add(inhabitants);
         }
 
@@ -38,8 +38,8 @@ public class Civilization extends Population {
     @Override
     public void run() {
 
-        boolean epidemic = false;
-        boolean livingPeople = true;
+        boolean epidemic;
+        boolean livingPeople;
 
         //System.out.println("before");
         region.startDay(people());
@@ -49,6 +49,8 @@ public class Civilization extends Population {
             epidemic = region.dailyTasks(this);
 
             if(epidemic) {
+
+                System.out.println("WATCH OUT");
                 try {
                     center.inform(this);
                 } catch (IOException e) {
@@ -100,7 +102,7 @@ public class Civilization extends Population {
 
     public void setPopulation(List<Person> people, int i) {
 
-        Collections.copy(civilization.get(i).people(), people);
+        Collections.copy(people, civilization.get(i).people());
     }
 
     /*

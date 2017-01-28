@@ -1,23 +1,19 @@
 package graphics;
 
-import Tests.TestInputHandler;
-import entities.Bacteria;
 import entities.Civilization;
-import pt.ua.gboard.FilledGelem;
+import entities.NursingTeam;
 import pt.ua.gboard.GBoard;
-import pt.ua.gboard.Gelem;
 import region.MedicalInformationCenter;
 import region.laboratory.BacteriaLaboratory;
+import region.laboratory.MedicalLaboratory;
 import region.worldregion.EarthRegion;
 import region.worldregion.Location;
-import region.worldregion.Zone;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.zip.ZipFile;
 
 /**
  * Created by espinha on 12/5/16.
@@ -39,10 +35,16 @@ public class Main {
 
             Civilization civilization = new Civilization(gboard, region, center);
 
-            new Thread(civilization).start();
-            BacteriaLaboratory bacteriaLaboratory = new BacteriaLaboratory(gboard);
 
-            gboard.pushInputHandler(new MapInputHandler(region, bacteriaLaboratory, null));
+            BacteriaLaboratory bacteriaLaboratory = new BacteriaLaboratory(gboard);
+            MedicalLaboratory medicalLaboratory = new MedicalLaboratory(gboard);
+
+            NursingTeam nursingTeam = new NursingTeam(gboard, region, center, medicalLaboratory);
+
+            new Thread(nursingTeam).start();
+            new Thread(civilization).start();
+
+            gboard.pushInputHandler(new MapInputHandler(region, bacteriaLaboratory, medicalLaboratory));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -27,11 +27,10 @@ public class EarthZone extends Zone {
         infected = false;
     }
 
-    public void spread(List<Bacteria> bacterias) {
+    public void spread(Vector<Bacteria> bacterias) {
 
         assert bacterias != null;
 
-        System.out.println(people.size());
         for(Bacteria bacteria: bacterias) {
 
             Infection infection = bacteria.getInfection();
@@ -45,15 +44,13 @@ public class EarthZone extends Zone {
                 person.infect(infection);
 
             // simulating contagion from an infected person to another person
-            int max = (int) Math.pow(2, density);
+            /*int max = (int) Math.pow(2, density);
             for(int i = 0; i < max; i++) {
 
                 rand = new Random().nextInt(people.size());
                 if(!people.get(rand).isInfected())
                     people.get(rand).infect(infection);
-            }
-
-            // TODO: add contagion
+            }*/
         }
 
         infected = true;
@@ -62,11 +59,17 @@ public class EarthZone extends Zone {
     public boolean infected() {
         return infected;
     }
-    public void vaccinate(List<Vaccine> vaccines) {
+    public void vaccinate(Map<String, Vaccine> vaccines) {
 
         assert vaccines != null;
 
-        //for()
+        people().forEach(
+                person -> {
+                    if(person.isInfected()) {
+                        person.vaccinatePerson(vaccines);
+                    }
+                }
+        );
     }
 
     public List<Person> people() {
@@ -76,11 +79,6 @@ public class EarthZone extends Zone {
     public Location getLocation() {
         return location;
     }
-
-    public boolean dailyTasks(Inhabitants inhabitants) {
-        return false;
-    }
-
 
     public void setPeople(Inhabitants inhabitants) {
 
@@ -92,5 +90,15 @@ public class EarthZone extends Zone {
         this.density = inhabitants.density();
 
         people.addAll(inhabitants.people());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        assert (EarthZone) o != null;
+
+        EarthZone area = (EarthZone) o;
+
+        return this.getLocation().equals(area.getLocation());
     }
 }

@@ -1,40 +1,50 @@
 package region.laboratory;
 
-import common.Report;
 import entities.Vaccine;
 import pt.ua.gboard.GBoard;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by rui on 1/24/17.
  */
 public class MedicalLaboratory extends Laboratory {
 
-    private int knownBacterias;
-    private int developedCures;
+    private boolean newTasks;
 
     public MedicalLaboratory(GBoard board) {
         super(board);
+
+        newTasks = false;
     }
 
-    public synchronized void inform(Report report) {
+    public synchronized Map<String, Vaccine> acquireVaccines(Map<String, Vaccine> vaccines) {
 
-        assert report != null;
 
-        // todo: use report
-        if(knownBacterias <= developedCures) knownBacterias++;
-        notify();
+        for(Vaccine vaccine: vaccines.values()) {
+            System.out.println(vaccine.infection().syntom());
+            System.out.println(vaccine.getVersatility());
 
-    }
-
-    public List<Vaccine> developVaccine(List<Vaccine> vaccines) {
-
-        try {
+            vaccine.develop();
+        }
+        /*try {
             wait();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
+
         return vaccines;
     }
+
+    /*public synchronized boolean waitForNewTasks() {
+        while(!newTasks) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
+    }*/
 }

@@ -9,6 +9,8 @@ import pt.ua.gboard.GBoard;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by rui on 1/24/17.
@@ -29,11 +31,11 @@ public class BacteriaLaboratory extends Laboratory {
         }*/
 
         Epidemic epidemic = (Epidemic) entity;
+        Vector<Bacteria> bacterias = epidemic.bacterias();
 
-        List<Bacteria> bacterias = epidemic.bacterias();
-        
+
         if(bacterias == null) {
-            bacterias = createBacterias(epidemic);
+            bacterias = createBacterias(epidemic, true);
             epidemic.setBacterias(bacterias);
             return;
         }
@@ -42,26 +44,35 @@ public class BacteriaLaboratory extends Laboratory {
 
             Infection infection = bacteria.getInfection();
 
-            assert infection != null;
-
             int severity = infection.getSeverity();
-            int lifespan = bacteria.lifespan();
-            infection.updateSeverity(severity + new Random().nextInt(lifespan));
+
+            int increase = severity > 6 ? severity/3 : severity+1;
+            //System.out.println(increase);
+
+            infection.updateSeverity(severity + ThreadLocalRandom.current().nextInt(increase));
         }
-        
-        List<Bacteria> newBacterias = createBacterias(epidemic);
+
+        /*try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+        Vector<Bacteria> newBacterias = createBacterias(epidemic,false);
         bacterias.addAll(newBacterias);
 
         epidemic.setBacterias(bacterias);
     }
 
-    private List<Bacteria> createBacterias(Epidemic epidemic) {
-        List<Bacteria> bacterias = new ArrayList<>();
-        Infection infection = new Infection("headaches");
+    private Vector<Bacteria> createBacterias(Epidemic epidemic, boolean initial) {
 
-        int max = new Random().nextInt(1000 - 500) + 500;
+        Vector<Bacteria> bacterias = new Vector<>();
+
+        int bound = initial ? 150 : 50;
+        int max = new Random().nextInt(bound - bound/2) + bound/2;
         for(int i = 0; i < max; i++) {
 
+            Infection infection = new Infection();
+            //System.out.println(infection.getSeverity());
 
             Bacteria b = new Bacteria(board, epidemic.region());
             b.setInfection(infection);
