@@ -19,12 +19,11 @@ public class Inhabitants  {
 
 
     private final int density;
-    private boolean epidemic;
     private List<Person> people;
 
     public Inhabitants(EarthZone area) {
 
-        epidemic = false;
+        assert area != null;
         
         Location location = area.getLocation();
         this.density = location.getDensity();

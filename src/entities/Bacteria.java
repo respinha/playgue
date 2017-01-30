@@ -14,6 +14,9 @@ import java.util.Random;
 
 /**
  * Created by espinha on 11/21/16.
+ *
+ * Objects of this type are created by any @link{Epidemic}
+
  */
 public class Bacteria extends BiologicalEntity {
 
@@ -27,54 +30,28 @@ public class Bacteria extends BiologicalEntity {
     }
 
     public Infection getInfection() {
+
         return infection;
     }
 
-    /*@Override
-    public void run() {
-
-        infection = newInfection();
-
-        int i = 0;  // DEBUG
-
-        while(i < 5) {
-
-            System.out.println(Thread.currentThread().getId() + " contagion: " + infection.getContagion());
-            MutableCountry country = Globals.randomCountry(continent);
-
-            alive = continent.spreadInfection(this, country.getCODE());
-
-            Globals.randomPause(500,2000);
-
-            int contagion = infection.getContagion();
-
-            int increase = new Random(productionTime).nextInt(contagion);
-            infection.increaseContagion(increase);
-
-            if(increase + 1 > contagion/2) { // greater than half
-                continent.spreadInfectionToBorders(this, country.getCODE());
-            }
-
-            //System.out.println("ran all borders");
-            productionTime++;
-
-            int development = laboratory.develop(this);
-            infection.updateSeverity(development);
-
-            i++;
-        }
-    }*/
-
     public void setInfection(Infection infection) {
+
+        assert infection != null;
+
         this.infection = infection;
     }
 
     public int lifespan() {
+
+        assert lifespan >= 0;
         return lifespan;
     }
 
     public void olden() {
-        lifespan--;
+        if(lifespan > 0)
+            lifespan--;
+
+        assert lifespan >= 0;
     }
 
     @Override

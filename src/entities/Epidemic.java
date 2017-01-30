@@ -43,66 +43,14 @@ public class Epidemic extends BiologicalEntity implements Runnable {
 
             laboratory.develop(this);
 
-            int size = bacterias.size();
+            //int size = bacterias.size();
 
             region.spread(this, locations);
-
-            //System.out.println("Epidemic borders: " + locations.size());
-            //System.out.println("Epidemic bacterias:" + bacterias.size());
-
-            if(size > bacterias.size())
-                System.out.println("There's only a matter of me, in a matter of speaking I'm dead");
 
             running = bacterias.size() > 0;
 
             Globals.metronome().sync();
         }
-        /**
-         * Lifecyle:
-         * createBacterias()
-         * while(conditionToRun) {
-         *      area.infect(targetArea);
-         *      laboratory.reproduceBacterias(bacterias)
-         *
-         *      conditionToRun = infectedPopulation > 0 && remaining life > 0
-         *      Globals.tick();
-         * }
-         *
-         */
-
-        /*
-
-        while(alive && lifespan > 0) {
-            MutableCountry country = Globals.randomCountry(continent);  // TODO: change to random area
-            Globals.randomPause(500,2000);
-            alive = continent.spreadInfection(this, country.getCODE());
-
-            int development = laboratory.develop(this);
-            infection.updateSeverity(development);
-
-            for(Bacteria bacteria: bacterias) {
-
-                Infection infection = bacteria.newInfection();
-                //System.out.println(Thread.currentThread().getId() + " contagion: " + infection.getContagion());
-
-
-
-
-
-
-                int contagion = infection.getContagion();
-
-                int increase = new Random(productionTime).nextInt(contagion);
-                infection.increaseContagion(increase);
-
-                if(increase + 1 > contagion/2) { // greater than half
-                    continent.spreadInfectionToBorders(this, country.getCODE());
-                }
-
-                //System.out.println("ran all borders");
-                productionTime++;
-            }
-        }*/
     }
 
     public Vector<Bacteria> bacterias() {
@@ -110,6 +58,9 @@ public class Epidemic extends BiologicalEntity implements Runnable {
     }
 
     public void setBacterias(Vector<Bacteria> bacterias) {
+
+        assert bacterias != null;
+
         if(this.bacterias == null)
             this.bacterias = bacterias;
         else
@@ -117,6 +68,8 @@ public class Epidemic extends BiologicalEntity implements Runnable {
     }
 
     public void expand(List<Location> borders) {
+        assert borders != null;
+
         locations.addAll(borders);
     }
 }

@@ -12,15 +12,14 @@ import java.util.List;
  */
 public abstract class Population extends BiologicalEntity {
 
-    protected GBoard board;
     protected MedicalInformationCenter center;
+
     public Population(GBoard board, EarthRegion region, MedicalInformationCenter center) {
 
         super(board, region);
 
         assert center != null;
 
-        this.board = board;
         this.center = center;
     }
 }

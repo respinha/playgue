@@ -20,19 +20,14 @@ public class BacteriaLaboratory extends Laboratory {
         super(board);
     }
 
+    @Override
     public synchronized void develop(BiologicalEntity entity) {
 
         assert entity != null;
 
-        /*try {
-            wait();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
 
         Epidemic epidemic = (Epidemic) entity;
         Vector<Bacteria> bacterias = epidemic.bacterias();
-
 
         if(bacterias == null) {
             bacterias = createBacterias(epidemic, true);
@@ -40,23 +35,16 @@ public class BacteriaLaboratory extends Laboratory {
             return;
         }
         
-        for (Bacteria bacteria: bacterias) {
+        /*for (Bacteria bacteria: bacterias) {
 
             Infection infection = bacteria.getInfection();
 
-            int severity = infection.getSeverity();
+            double severity = infection.getSeverity();
 
-            int increase = severity > 6 ? severity/3 : severity+1;
-            //System.out.println(increase);
-
-            infection.updateSeverity(severity + ThreadLocalRandom.current().nextInt(increase));
-        }
-
-        /*try {
-            wait();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            //double increase = severity > 6 ? severity/3 : severity+1;
+            //infection.updateSeverity(severity + ThreadLocalRandom.current().nextDouble() * increase);
         }*/
+
         Vector<Bacteria> newBacterias = createBacterias(epidemic,false);
         bacterias.addAll(newBacterias);
 

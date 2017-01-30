@@ -10,6 +10,7 @@ import region.worldregion.EarthRegion;
  */
 public class ResearchTeam extends MedicalTeam{
 
+
     public ResearchTeam(GBoard board, EarthRegion region, MedicalInformationCenter center, MedicalLaboratory laboratory) {
         super(board, region, center,laboratory);
     }
@@ -17,12 +18,6 @@ public class ResearchTeam extends MedicalTeam{
     @Override
     public void run() {
 
-        boolean required = true;
-        while (required) {
-
-            /*required = laboratory.waitForNewTasks();
-            laboratory.developVaccines();*/
-
-        }
+        laboratory.develop(this);
     }
 }

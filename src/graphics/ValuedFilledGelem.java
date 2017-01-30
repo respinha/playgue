@@ -10,6 +10,8 @@ import java.awt.*;
 public class ValuedFilledGelem extends FilledGelem {
 
     private int cellValue;
+    private int state = 0;
+    
     public ValuedFilledGelem(Color color, double v, int cellValue) {
         super(color, v);
 
@@ -19,5 +21,18 @@ public class ValuedFilledGelem extends FilledGelem {
     public int cellValue() {
 
         return cellValue;
+    }
+
+
+    public void release() {
+        state = 0;
+    }
+    
+    public int state() {
+        return state;
+    }
+
+    public void mark() {
+        state = 1;
     }
 }

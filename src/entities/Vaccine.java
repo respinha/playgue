@@ -8,30 +8,30 @@ import common.Infection;
  */
 public class Vaccine {
 
-    private final Infection infection;
+    //private final Infection infection;
+    private String symptom;
     private double versatility;
 
-    public Vaccine(Infection infection) {
+    public Vaccine(String symptom) {
 
-        assert infection != null;
+        assert symptom != null;
 
-        this.infection = infection;
+        this.symptom = symptom;
 
         versatility = Math.random() * 0.75;
     }
 
     public boolean equals(Object o) {
 
-        assert ((Vaccine) o).infection() != null;
+        assert ((Vaccine) o).symptom() != null;
 
-        System.out.println(infection.syntom());
-        System.out.println(((Vaccine) o).infection().syntom());
-        return this.infection.equals(((Vaccine) o).infection());
+        return this.symptom.equalsIgnoreCase(symptom);
     }
 
-    public Infection infection() {
-        return infection;
+    private String symptom() {
+        return symptom;
     }
+
 
     public double getVersatility() {
         return versatility;

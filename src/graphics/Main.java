@@ -1,7 +1,9 @@
 package graphics;
 
+import common.Globals;
 import entities.Civilization;
 import entities.NursingTeam;
+import entities.ResearchTeam;
 import pt.ua.gboard.GBoard;
 import region.MedicalInformationCenter;
 import region.laboratory.BacteriaLaboratory;
@@ -9,6 +11,7 @@ import region.laboratory.MedicalLaboratory;
 import region.worldregion.EarthRegion;
 import region.worldregion.Location;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,8 +23,6 @@ import java.util.*;
  */
 public class Main {
 
-    static final int seaSymbol = 0;
-    static final int[] earthSymbols = {1,2,3,4,5};
     public static void main(String[] args) {
 
         final GBoard gboard = new GBoard("Map", 20, 39, 1); //lines, columns, layers
@@ -40,11 +41,20 @@ public class Main {
             MedicalLaboratory medicalLaboratory = new MedicalLaboratory(gboard);
 
             NursingTeam nursingTeam = new NursingTeam(gboard, region, center, medicalLaboratory);
+            ResearchTeam researchTeam = new ResearchTeam(gboard,region,center,medicalLaboratory);
 
             new Thread(nursingTeam).start();
             new Thread(civilization).start();
+            new Thread(researchTeam).start();
 
-            gboard.pushInputHandler(new MapInputHandler(region, bacteriaLaboratory, medicalLaboratory));
+            // info pannel
+            /*JPanel content = new JPanel(new BorderLayout());
+            content.setBorder(BorderFactory.createBevelBorder(0));
+
+            gboard.frame().add(content);
+            gboard.frame().pack();*/
+
+            gboard.pushInputHandler(new MapInputHandler(region, bacteriaLaboratory));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,19 +75,7 @@ public class Main {
                 char c = line.charAt(i);
                 int number = Character.getNumericValue(c);
 
-                Color color;
-                switch (number){
-
-                    case seaSymbol: color = Color.BLUE;
-                        break;
-                    case 1: color = Color.orange;
-                        break;
-                    case 2: color = Color.magenta;
-                        break;
-                    case 3:
-                    default: color = Color.RED;
-                        break;
-                }
+                Color color = Globals.chooseColor(number);
 
                 if(number > 0)
                     locations.add(new Location(new Point(i, l), number));

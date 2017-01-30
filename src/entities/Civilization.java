@@ -22,6 +22,8 @@ public class Civilization extends Population {
     public Civilization(GBoard board, EarthRegion region, MedicalInformationCenter center) {
         super(board, region, center);
 
+        assert center != null;
+
         this.center = center;
 
         civilization = new ArrayList<>();
@@ -33,6 +35,9 @@ public class Civilization extends Population {
         }
 
         region.setInhabitants(this);
+
+
+        assert civilization.size() > 0;
     }
 
     @Override
@@ -41,9 +46,7 @@ public class Civilization extends Population {
         boolean epidemic;
         boolean livingPeople;
 
-        //System.out.println("before");
         region.startDay(people());
-        //System.out.println("after");
 
         do {
             epidemic = region.dailyTasks(this);
@@ -58,42 +61,20 @@ public class Civilization extends Population {
                 }
             }
 
-            livingPeople = false;
-            for(int i = 0; i < civilization.size(); i++) {
+            //livingPeople = false;
 
-                Inhabitants inhabitants = civilization.get(i);
-                List<Person> people = inhabitants.people();
-                for(int j = 0; j < people.size(); j++) {
-                    people.get(j).decreaseStamina();
-                }
-
-                if(!civilization.get(i).dead()) {
-                    livingPeople = true;
-                }
-            }
-
+            System.out.println("Civilization: ending lifecycle");
             Globals.metronome().sync();
 
-        } while (livingPeople && epidemic);
-
-        /**
-         * while(totalPopulation > 0) {
-         *      totalPopulation = area.dailyTasks()
-         *
-         *      center.inform()
-         *      Globals.tick()
-         *}
-         */
+            if(!epidemic) {
+                System.out.println("Epidemic OOOOVER");
+                epidemic = true;
+            }
+        } while (epidemic);
     }
 
     public List<Inhabitants> people() {
         return civilization;
-    }
-
-    public void clone(Civilization p) {
-        center = p.informationCenter();
-        Collections.copy(people(), p.people());
-
     }
 
     public MedicalInformationCenter informationCenter() {
@@ -102,18 +83,16 @@ public class Civilization extends Population {
 
     public void setPopulation(List<Person> people, int i) {
 
-        Collections.copy(people, civilization.get(i).people());
+        //Collections.copy(people, civilization.get(i).people());
+
+        assert i >= 0 && people != null;
+
+        List<Person> list = civilization.get(i).people();
+        list.clear();
+
+        list.addAll(people);
+
+
     }
 
-    /*
-    public void setPopulation(List<Person> inhabitants, int i) {
-        Collections.copy(inhabitants, people);
-    }
-
-    public boolean hasInfectedPeople() {
-        for(Person p: people())
-            if(p.isInfected()) return true;
-
-        return false;
-    }*/
 }

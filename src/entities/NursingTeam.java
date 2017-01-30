@@ -7,7 +7,6 @@ import region.MedicalInformationCenter;
 
 import region.laboratory.MedicalLaboratory;
 import region.worldregion.EarthRegion;
-import region.worldregion.EarthZone;
 
 import java.util.*;
 
@@ -16,11 +15,14 @@ import java.util.*;
  */
 public class NursingTeam extends MedicalTeam {
 
-    private Map<String, Vaccine> vaccines = null;
+    private Map<String, Vaccine> vaccines;
+    private Set<String> knownInfections;
+
 
     public NursingTeam(GBoard board, EarthRegion region, MedicalInformationCenter center, MedicalLaboratory laboratory) {
         super(board, region, center,laboratory);
 
+        knownInfections = new LinkedHashSet<>();
         vaccines = new HashMap<>();
     }
 
@@ -28,14 +30,15 @@ public class NursingTeam extends MedicalTeam {
 
         assert infection != null;
 
-        if(vaccines.get(infection.syntom()) == null) {
-            Vaccine vaccine = new Vaccine(infection);
-            vaccines.put(infection.syntom(),vaccine);
-        }
+        knownInfections.add(infection.symptom());
     }
 
     public Map<String, Vaccine> vaccines() {
         return vaccines;
+    }
+
+    public Set<String> knownInfections() {
+        return knownInfections;
     }
 
     @Override
@@ -46,16 +49,17 @@ public class NursingTeam extends MedicalTeam {
         boolean required = true;
         while(required) {
 
-            //region.test();
-
             center.watchOver(this);
 
-            vaccines = laboratory.acquireVaccines(vaccines);
+            laboratory.acquireVaccines(this);
 
-            required = region.vaccinate(this);
+            region.vaccinate(this);
+            if(!required) laboratory.close();
 
+            System.out.println("End of nursing cycle");
             Globals.metronome().sync();
         }
+
         /**
          * Lifecyle:
          * createVaccines()
@@ -71,4 +75,7 @@ public class NursingTeam extends MedicalTeam {
          */
     }
 
+    public void newVaccine(String symptom, Vaccine vaccine) {
+        vaccines.put(symptom, vaccine);
+    }
 }

@@ -1,12 +1,10 @@
 package entities;
 
+import common.Globals;
 import common.Infection;
 import region.worldregion.EarthZone;
 
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by espinha on 1/25/17.
@@ -15,36 +13,57 @@ public class Person  {
 
     private final EarthZone area;
     private final String name;
-    private int stamina;
+    private double stamina;
     private Infection infection;
     private Set<String> immunities;
+    private List<Double> staminaRecord;
 
-    public Person(String name, EarthZone area, int stamina) {
+    public Person(String name, EarthZone area, double stamina) {
         this.name = name;
         this.area = area;
 
-        this.stamina = stamina;
+        assert stamina >= 78;
 
+        this.stamina = stamina;
         immunities = new LinkedHashSet<>();
+
+        if(new Random().nextInt(2) > 0) {
+
+            immunities.add(Globals.randomSymptom());
+        }
+
+        staminaRecord = new ArrayList<>();
     }
 
-    public int getStamina() {
+    public double getStamina() {
+
+
+        assert stamina >= 0;
+
         return stamina;
+
     }
 
     public void decreaseStamina() {
-        if(infection != null)
-            this.stamina -= infection.getSeverity();
-    }
 
-    public void increaseStamina(int factor) {
-        this.stamina += factor;
+        if(infection != null && stamina > 0) {
+            staminaRecord.add(stamina);
+            this.stamina -= infection.getSeverity();
+        }
+
+        if(stamina < 0)
+            stamina = 0;
     }
     
     public void infect(Infection infection) {
 
-        if(!immunities.contains(infection.syntom()))
+        assert infection != null;
+
+        if(!immunities.contains(infection.symptom())) {
             this.infection = infection;
+            //System.out.println(infection.getSeverity());
+        }
+
     }
 
     public boolean isInfected() {
@@ -58,20 +77,29 @@ public class Person  {
 
     public void vaccinatePerson(Map<String, Vaccine> vaccines) {
 
-        Vaccine vaccine = vaccines.get(infection.syntom());
+        assert vaccines != null;
 
-        if(vaccine != null) {
-            // vaccine is completely effective
-            immunities.add(infection.syntom());
-            this.infection = null;
+        if(infection != null) {
 
-        } else {
+            if(vaccines.get(infection.symptom()) != null)
+                infection = null;
 
-            Vaccine[] vaccinesArr = (Vaccine[]) vaccines.values().toArray();
-            vaccine = vaccinesArr[new Random().nextInt(vaccinesArr.length)];
-
-            // TODO: implement
+            for(String s: vaccines.keySet())
+                immunities.add(s);
         }
+
+        if(infection != null) {
+            Vaccine[] vaccinesArr = (Vaccine[]) vaccines.values().toArray();
+            Vaccine vaccine = vaccinesArr[new Random().nextInt(vaccinesArr.length)];
+
+            infection.decreaseSeverity(vaccine.getVersatility());
+        }
+    }
+
+    public boolean dead() {
+        assert stamina >= 0;
+
+        return stamina == 0;
     }
 
 }

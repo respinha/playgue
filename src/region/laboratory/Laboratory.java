@@ -1,13 +1,8 @@
 package region.laboratory;
 
-import common.Report;
-import entities.Bacteria;
 import entities.BiologicalEntity;
-import entities.LiveEntity;
 import pt.ua.gboard.GBoard;
-import region.worldregion.Zone;
 
-import java.util.List;
 
 /**
  * Created by rui on 1/23/17.
@@ -23,5 +18,6 @@ public abstract class Laboratory {
     public Laboratory(GBoard board) {
         this.board = board;
     }
-    //public abstract void develop(BiologicalEntity entity);
+
+    public abstract void develop(BiologicalEntity entity);
 }

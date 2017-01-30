@@ -37,6 +37,7 @@ public class MedicalInformationCenter {
 
     public synchronized void inform(Civilization civilization) throws IOException {
 
+        System.out.println("informing");
         civilization.people().forEach(
                 inhabitants -> inhabitants.people().forEach(
                         person -> {

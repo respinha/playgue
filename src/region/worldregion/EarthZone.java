@@ -1,10 +1,12 @@
 package region.worldregion;
 
+import common.Globals;
 import common.Infection;
 import entities.Bacteria;
 import entities.Person;
 import entities.Inhabitants;
 import entities.Vaccine;
+import graphics.ValuedFilledGelem;
 import pt.ua.gboard.GBoard;
 
 import java.awt.*;
@@ -19,45 +21,83 @@ public class EarthZone extends Zone {
     private List<Person> people;
     private boolean infected;
     private int density;
+    private int initialPopulation;
 
     public EarthZone(GBoard board, Location location) {
         super(board, location);
 
         //System.out.println(location.getPoint());
         infected = false;
+
     }
 
     public void spread(Vector<Bacteria> bacterias) {
 
         assert bacterias != null;
 
-        for(Bacteria bacteria: bacterias) {
+        if(people.size() > 0) { // if population still exists
+            for (Bacteria bacteria : bacterias) {
 
-            Infection infection = bacteria.getInfection();
+                Infection infection = bacteria.getInfection();
 
-            int rand = new Random().nextInt(people.size());
+                int rand = new Random().nextInt(people.size());
 
-            Person person = people.get(rand);
+                Person person = people.get(rand);
 
-            // only update infection if person has a less severe infection
-            if(!person.isInfected() || person.getInfection().getSeverity() < infection.getSeverity())
-                person.infect(infection);
+                // only update infection if person has a less severe infection
+                if (!person.isInfected() || person.getInfection().getSeverity() < infection.getSeverity())
+                    person.infect(infection);
+            }
 
-            // simulating contagion from an infected person to another person
-            /*int max = (int) Math.pow(2, density);
-            for(int i = 0; i < max; i++) {
+            double percentage = 0;
+            for(Person person: people) {
+                if (person.isInfected()) {
+                    percentage++;
+                    infected = true;
+                }
+            }
 
-                rand = new Random().nextInt(people.size());
-                if(!people.get(rand).isInfected())
-                    people.get(rand).infect(infection);
-            }*/
+            percentage = (percentage * 100) / people().size();
+
+            if(infected) {
+                int line = (int) getLocation().y();
+                int col = (int) getLocation().x();
+
+                board.erase(line, col);
+
+                int gradient = (int) (255 - percentage) + 1;
+                double deathPercentage = (people().size() * 100) /initialPopulation;
+
+                gradient -= deathPercentage;
+                Color tmp = new Color(gradient,0,0);
+                ValuedFilledGelem gelem = new ValuedFilledGelem(tmp, 100, getLocation().getDensity());
+                board.draw(gelem, line, col, 0);
+
+                ValuedFilledGelem elem = (ValuedFilledGelem) board.topGelem((int) location.y(), (int) location.x());
+                elem.mark();
+            }
         }
+    }
 
-        infected = true;
+    public void decreaseSickPeopleStamina() {
+
+        Iterator<Person> iterator = people.iterator();
+        while(iterator.hasNext()) {
+
+            //Inhabitants inhabitants = civilization.get(i);
+            //List<Person> people = inhabitants.people();
+            Person person = iterator.next();
+            person.decreaseStamina();
+
+            if(person.dead()) {
+                iterator.remove();
+            }
+        }
     }
 
     public boolean infected() {
-        return infected;
+
+        return infected && people.size() > 0;
     }
     public void vaccinate(Map<String, Vaccine> vaccines) {
 
@@ -70,6 +110,27 @@ public class EarthZone extends Zone {
                     }
                 }
         );
+
+        boolean updateInfected = false;
+        for(Person person: people())
+            if(person.isInfected())
+                updateInfected = true;
+
+        boolean prevInfected = infected;
+        infected = updateInfected;
+
+        if(!infected && prevInfected) {
+            int x = (int) this.getLocation().x();
+
+            int y = (int) this.getLocation().y();
+
+            board.erase(y, x);
+
+            Color color = Globals.chooseColor(this.getLocation().getDensity());
+
+            ValuedFilledGelem gelem = new ValuedFilledGelem(color, 100, this.getLocation().getDensity());
+            board.draw(gelem, y, x, 0);
+        }
     }
 
     public List<Person> people() {
@@ -90,6 +151,7 @@ public class EarthZone extends Zone {
         this.density = inhabitants.density();
 
         people.addAll(inhabitants.people());
+        initialPopulation = people.size();
     }
 
     @Override
@@ -100,5 +162,9 @@ public class EarthZone extends Zone {
         EarthZone area = (EarthZone) o;
 
         return this.getLocation().equals(area.getLocation());
+    }
+
+    public int initialPopulation() {
+        return initialPopulation;
     }
 }

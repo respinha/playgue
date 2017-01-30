@@ -18,16 +18,14 @@ import java.util.*;
 public class MapInputHandler extends GBoardInputHandler {
 
     private EarthRegion region;
-    private MedicalLaboratory medicalLaboratory;
     private BacteriaLaboratory bacteriaLaboratory;
     private java.util.List<Thread> threads;
-    public MapInputHandler(EarthRegion region, BacteriaLaboratory bacteriaLaboratory, MedicalLaboratory medicalLaboratory) {
+    public MapInputHandler(EarthRegion region, BacteriaLaboratory bacteriaLaboratory) {
         //super(mousePressedMask | keyPressedMask);
         super(mousePressedMask);
 
         this.region = region;
         this.bacteriaLaboratory = bacteriaLaboratory;
-        this.medicalLaboratory = medicalLaboratory;
 
         threads = new ArrayList<>();
     }
@@ -47,6 +45,7 @@ public class MapInputHandler extends GBoardInputHandler {
 
             Thread thread = new Thread(new Epidemic(gBoard, region, bacteriaLaboratory, location)); // TODO: pool of epidemies
             threads.add(thread);
+
             thread.start();
         } else {
             System.out.println("Did you ever tried to walk on the sea? Didn't think so.");

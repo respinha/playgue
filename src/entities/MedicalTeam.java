@@ -14,6 +14,8 @@ public abstract class MedicalTeam extends Population {
     public MedicalTeam(GBoard board, EarthRegion region, MedicalInformationCenter center, MedicalLaboratory laboratory) {
         super(board, region, center);
 
+        assert laboratory != null;
+
         this.laboratory = laboratory;
     }
 }

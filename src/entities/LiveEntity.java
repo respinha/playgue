@@ -11,6 +11,9 @@ public abstract class LiveEntity implements Runnable {
     protected final GBoard board;
 
     public LiveEntity(GBoard board) {
+
+        assert board != null;
+
         this.board = board;
     }
 }

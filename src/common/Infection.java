@@ -5,29 +5,40 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by rui on 1/24/17.
+ *
+ * Infection object. It is an attribute of {@link entities.Bacteria}, which has variable symptom and  severity.
+ * Other fields may be added with appropriate methods if we wish to introduce more elements to the
+ * infection/contagion mechanism.
+ *
+ * Class invariants: symptom is never null and severity is positive.
  */
 public class Infection {
 
-    private final String syntom;
-    private final String[] syntoms = {"headache", "vomits", "nosebleed","heart failure"};
+    private final String symptom;
+    private double severity;
 
-    private int severity;
-
-
+    private BitSet dna;
+    /**
+     * Constructor.
+     *
+     * Post-conditions: symptom is valid and severity is a value between 1 and 5
+     */
     public Infection() {
 
-        this.syntom = syntoms[new Random().nextInt(syntoms.length)];
-        //this.syntoms = syntoms;
-        severity = new Random().nextInt(10) +1;
+        this.symptom = Globals.randomSymptom();
 
-        assert syntom != null && !syntom.isEmpty() && severity <= 10 && severity >= 1;
+        severity = 1 + (5 - 1) * new Random().nextDouble();
+
+        dna = new BitSet();
+
+        assert symptom != null && !symptom.isEmpty() && severity <= 5 && severity >= 1;
 
     }
-    public int getSeverity() {
+    public double getSeverity() {
         return severity;
     }
 
-    public void updateSeverity(int severity) {
+    public void updateSeverity(double severity) {
         this.severity = severity;
     }
 
@@ -35,11 +46,26 @@ public class Infection {
     public boolean equals(Object o) {
 
         Infection i2 = (Infection) o;
-        return syntom.equalsIgnoreCase(i2.syntom());
+
+        assert i2 != null;
+
+        return symptom.equalsIgnoreCase(i2.symptom());
     }
 
-    public String syntom() {
+    public String symptom() {
 
-        return syntom;
+        assert symptom != null;
+
+        return symptom;
+    }
+
+    public void decreaseSeverity(double factor) {
+
+        assert factor >= 0 && factor < 1;
+
+        double decrease = 1 - factor;
+        this.severity /= decrease;
+
+        assert severity > 0;
     }
 }
