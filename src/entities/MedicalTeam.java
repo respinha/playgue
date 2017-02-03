@@ -6,7 +6,9 @@ import region.laboratory.MedicalLaboratory;
 import region.worldregion.EarthRegion;
 
 /**
- * Created by espinha on 1/28/17.
+ * 1/28/17.
+ *
+ * Subtyped abstraction of population which interacts with the MedicalLaboratory.
  */
 public abstract class MedicalTeam extends Population {
 

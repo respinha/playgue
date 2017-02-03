@@ -8,12 +8,20 @@ import javax.swing.plaf.synth.Region;
 import java.util.List;
 
 /**
- * Created by espinha on 1/26/17.
+ * 1/26/17.
+ *
+ * Active entity subtype. May be inherited from any active entity that represents a group of people.
  */
-public abstract class Population extends BiologicalEntity {
+public abstract class Population extends LiveEntity {
 
     protected MedicalInformationCenter center;
 
+    /**
+     *
+     * @param board
+     * @param region
+     * @param center
+     */
     public Population(GBoard board, EarthRegion region, MedicalInformationCenter center) {
 
         super(board, region);

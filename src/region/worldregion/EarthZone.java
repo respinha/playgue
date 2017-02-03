@@ -14,19 +14,18 @@ import java.util.*;
 import java.util.List;
 
 /**
- * Created by espinha on 1/25/17.
+ * Area that contains a set of inhabitants.
+ * It is binded to a certain location.
  */
 public class EarthZone extends Zone {
 
     private List<Person> people;
     private boolean infected;
-    private int density;
     private int initialPopulation;
 
     public EarthZone(GBoard board, Location location) {
         super(board, location);
 
-        //System.out.println(location.getPoint());
         infected = false;
 
     }
@@ -65,16 +64,21 @@ public class EarthZone extends Zone {
 
                 board.erase(line, col);
 
-                int gradient = (int) (255 - percentage) + 1;
-                double deathPercentage = (people().size() * 100) /initialPopulation;
+                int gradient = (int) (255 - percentage);
 
-                gradient -= deathPercentage;
-                Color tmp = new Color(gradient,0,0);
-                ValuedFilledGelem gelem = new ValuedFilledGelem(tmp, 100, getLocation().getDensity());
-                board.draw(gelem, line, col, 0);
+                try {
 
-                ValuedFilledGelem elem = (ValuedFilledGelem) board.topGelem((int) location.y(), (int) location.x());
-                elem.mark();
+                    Color tmp = new Color(gradient,0,0);
+                    ValuedFilledGelem gelem = new ValuedFilledGelem(tmp, 100, getLocation().getDensity());
+                    board.draw(gelem, line, col, 0);
+
+                    ValuedFilledGelem elem = (ValuedFilledGelem) board.topGelem((int) location.y(), (int) location.x());
+                    elem.mark();
+                } catch (IllegalArgumentException e) {
+
+                    System.exit(1);
+                }
+
             }
         }
     }
@@ -143,27 +147,34 @@ public class EarthZone extends Zone {
 
     public void setPeople(Inhabitants inhabitants) {
 
-        assert this.people == null;
         assert inhabitants != null;
         assert inhabitants.people() != null && inhabitants.people().size() > 0;
 
         people = new ArrayList<>(inhabitants.people().size());
-        this.density = inhabitants.density();
 
         people.addAll(inhabitants.people());
         initialPopulation = people.size();
     }
 
+    /**
+     * Override of method equals(). EarthZones are equal if they share the same location in the board.
+     * @param
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
 
-        assert (EarthZone) o != null;
+        assert o != null;
 
         EarthZone area = (EarthZone) o;
 
         return this.getLocation().equals(area.getLocation());
     }
 
+    /**
+     *
+     * @return The area's initial population.
+     */
     public int initialPopulation() {
         return initialPopulation;
     }

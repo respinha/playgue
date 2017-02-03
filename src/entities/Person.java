@@ -7,20 +7,20 @@ import region.worldregion.EarthZone;
 import java.util.*;
 
 /**
- * Created by espinha on 1/25/17.
+ * 1/25/17.
+ *
+ * Object that composes a group of Inhabitants.
+ * Main attributes are stamina (which can be reduced by an infection), current infection (which may not exist)
+ * and a set of immunities to a set of symptoms.
  */
 public class Person  {
 
-    private final EarthZone area;
-    private final String name;
     private double stamina;
     private Infection infection;
     private Set<String> immunities;
     private List<Double> staminaRecord;
 
-    public Person(String name, EarthZone area, double stamina) {
-        this.name = name;
-        this.area = area;
+    public Person(double stamina) {
 
         assert stamina >= 78;
 
@@ -89,10 +89,20 @@ public class Person  {
         }
 
         if(infection != null) {
-            Vaccine[] vaccinesArr = (Vaccine[]) vaccines.values().toArray();
-            Vaccine vaccine = vaccinesArr[new Random().nextInt(vaccinesArr.length)];
 
-            infection.decreaseSeverity(vaccine.getVersatility());
+
+            try {
+                int length = vaccines.values().size();
+
+                Vaccine[] vaccinesArr = vaccines.values().toArray(new Vaccine[length]);
+                Vaccine vaccine = vaccinesArr[new Random().nextInt(vaccinesArr.length)];
+
+                infection.decreaseSeverity(vaccine.getVersatility());
+            }  catch (ClassCastException e) {
+
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
     }
 

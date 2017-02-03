@@ -1,9 +1,10 @@
 package region.laboratory;
 
+import common.Globals;
 import common.Infection;
 import entities.Bacteria;
-import entities.BiologicalEntity;
 import entities.Epidemic;
+import entities.LiveEntity;
 import pt.ua.gboard.GBoard;
 
 import java.util.ArrayList;
@@ -13,15 +14,22 @@ import java.util.Vector;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Created by rui on 1/24/17.
+ * Subtype of laboratory shared by epidemics.
+ * Currently only one public method is available (develop()).
  */
 public class BacteriaLaboratory extends Laboratory {
+
+    /**
+     *
+     * @param board
+     */
     public BacteriaLaboratory(GBoard board) {
         super(board);
     }
 
+
     @Override
-    public synchronized void develop(BiologicalEntity entity) {
+    public synchronized void develop(LiveEntity entity) {
 
         assert entity != null;
 
@@ -30,7 +38,7 @@ public class BacteriaLaboratory extends Laboratory {
         Vector<Bacteria> bacterias = epidemic.bacterias();
 
         if(bacterias == null) {
-            bacterias = createBacterias(epidemic, true);
+            bacterias = createBacterias();
             epidemic.setBacterias(bacterias);
             return;
         }
@@ -41,32 +49,37 @@ public class BacteriaLaboratory extends Laboratory {
 
             double severity = infection.getSeverity();
 
-            //double increase = severity > 6 ? severity/3 : severity+1;
-            //infection.updateSeverity(severity + ThreadLocalRandom.current().nextDouble() * increase);
+            double increase = severity > 6 ? severity/3 : severity+1;
+            infection.updateSeverity(severity + ThreadLocalRandom.current().nextDouble() * increase);
         }*/
 
-        Vector<Bacteria> newBacterias = createBacterias(epidemic,false);
-        bacterias.addAll(newBacterias);
-
         epidemic.setBacterias(bacterias);
+
+        assert epidemic.bacterias().size() > 0;
     }
 
-    private Vector<Bacteria> createBacterias(Epidemic epidemic, boolean initial) {
+    /**
+     * Create a set of new bacterias with a random symptom.
+     * @return new vector of Bacterias.
+     */
+    private Vector<Bacteria> createBacterias() {
 
         Vector<Bacteria> bacterias = new Vector<>();
 
-        int bound = initial ? 150 : 50;
+        int bound = 150;
         int max = new Random().nextInt(bound - bound/2) + bound/2;
+
+        Infection infection = new Infection();
+
         for(int i = 0; i < max; i++) {
 
-            Infection infection = new Infection();
-            //System.out.println(infection.getSeverity());
+            // Globals.randomPause(500,1500);
 
-            Bacteria b = new Bacteria(board, epidemic.region());
-            b.setInfection(infection);
-
+            Bacteria b = new Bacteria(infection);
             bacterias.add(b);
         }
+
+        assert bacterias.size() > 0;
 
         return bacterias;
     }

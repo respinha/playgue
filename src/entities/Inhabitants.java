@@ -13,7 +13,9 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Created by espinha on 1/26/17.
+ * 1/26/17.
+ *
+ * Inhabitants that live in a certain EarthZone,
  */
 public class Inhabitants  {
 
@@ -21,6 +23,10 @@ public class Inhabitants  {
     private final int density;
     private List<Person> people;
 
+    /**
+     *
+     * @param area
+     */
     public Inhabitants(EarthZone area) {
 
         assert area != null;
@@ -34,14 +40,22 @@ public class Inhabitants  {
         for(int i = 0; i < max; i++) {
 
             int stamina = new Random().nextInt(100 - 78) + 78;
-            people.add(new Person("Person " + i, area, stamina));
+            people.add(new Person(stamina));
         }
     }
 
+    /**
+     *
+     * @return density
+     */
     public int density() {
         return density;
     }
 
+    /**
+     *
+     * @return If there is any inhabitant infected.
+     */
     public boolean infected() {
 
         for(Person person: people)
@@ -51,16 +65,11 @@ public class Inhabitants  {
         return false;
     }
 
+    /**
+     *
+     * @return List of current inhabitants.
+     */
     public List<Person> people() {
         return people;
-    }
-
-    public boolean dead() {
-        for(int i = 0; i < people.size(); i++) {
-            if(people.get(i).getStamina() > 0)
-                return false;
-        }
-
-        return true;
     }
 }

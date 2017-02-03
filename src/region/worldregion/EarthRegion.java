@@ -1,6 +1,7 @@
 package region.worldregion;
 
 import common.Globals;
+import common.Infection;
 import entities.*;
 import graphics.ValuedFilledGelem;
 import pt.ua.gboard.GBoard;
@@ -11,7 +12,8 @@ import java.util.*;
 import java.util.List;
 
 /**
- * Created by espinha on 11/21/16.
+ * Shared region.
+ * It is composed by a set of EarthZones and accessed by a Civilization
  */
 public class EarthRegion extends WorldRegion{
 
@@ -20,7 +22,11 @@ public class EarthRegion extends WorldRegion{
     private boolean noWorries;
     private boolean civilizationAwake;
 
-    private int DEBUGGER = 0;
+    /**
+     *
+     * @param board
+     * @param mapZones
+     */
     public EarthRegion(GBoard board, List<Location> mapZones) {
 
         super(board);
@@ -38,17 +44,23 @@ public class EarthRegion extends WorldRegion{
         civilizationAwake = false;
     }
 
+    /**
+     * Method invoked by an Epidemic to infect people in a certain location.
+     * @param epidemic
+     * @param locations
+     */
     public synchronized void spread(Epidemic epidemic, Set<Location> locations) {
 
         assert epidemic != null;
         assert locations != null;
 
         while (!civilizationAwake) {
-            try {
+            /*try {
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
+            await();
         }
 
         // DEBUG #########
@@ -78,30 +90,28 @@ public class EarthRegion extends WorldRegion{
 
         System.out.println("total infected: " + sum);
         System.out.println("total: " + totalSum);
-        // ##############
 
         Vector<Bacteria> bacterias = epidemic.bacterias();
-
-        //Location location = locations.iterator().next();
-        // Iterator<Location> it = locations.iterator();
 
         List<Location> list = new ArrayList<>();
         list.addAll(locations);
 
         for(EarthZone area: areas) {
-
             for(Location location: list){
-                //Location location = locations.iterator().next();
+
                 boolean found = area.getLocation().equals(location);
                 if (found) {
 
-                    //System.out.println(area.getLocation());
                     if (area.infected() && area.people().size() > (area.initialPopulation() / 3)) {
                         List<Location> borders = spreadBorders(area, bacterias);
                         epidemic.expand(borders);
                     }
 
                     area.spread(bacterias);
+                    if(area.infected()) {
+
+                        bacterias.addAll(multiply(epidemic));
+                    }
                 }
             }
         }
@@ -116,7 +126,6 @@ public class EarthRegion extends WorldRegion{
             if (bacteria.lifespan() == 0) {
 
                 bacIterator.remove();
-                System.out.println("bacteria death");
             }
         }
 
@@ -128,22 +137,62 @@ public class EarthRegion extends WorldRegion{
 
             ValuedFilledGelem elem = (ValuedFilledGelem) board.topGelem((int) location.y(), (int) location.x());
             if(!area.infected() && elem != null) {
-                if(elem.state() == 1) {
-                    board.erase(elem, (int) location.y(), (int) location.x());
 
-                    Color color = Globals.chooseColor(elem.cellValue());
+                Color color = null;
+
+                if(area.people().size() == 0) {
+                    board.erase(elem, (int) location.y(), (int) location.x());
+                    color = Color.GRAY;
+
                     ValuedFilledGelem newGelem = new ValuedFilledGelem(color, 100, elem.cellValue());
 
                     board.draw(newGelem, (int) location.y(), (int) location.x(), 0);
                 }
+                else {
+                    if (area.people().size() > 0 && elem.state() == 1) {
+                        board.erase(elem, (int) location.y(), (int) location.x());
+                        color = Globals.chooseColor(elem.cellValue());
+
+                        ValuedFilledGelem newGelem = new ValuedFilledGelem(color, 100, elem.cellValue());
+
+                        board.draw(newGelem, (int) location.y(), (int) location.x(), 0);
+                    }
+                }
+
+
             }
 
-            //if(area.people().size() < size) System.out.println("Bingo");
         }
 
-
         noWorries = false;
-        notify();
+        //notify();
+        signal();
+    }
+
+    /**
+     * Method invoked when bacterias successfully spread to other areas.
+     * @param epidemic
+     * @return new bacterias.
+     */
+    private Vector<Bacteria> multiply(Epidemic epidemic) {
+
+        assert epidemic != null;
+        assert epidemic.bacterias().size() > 0;
+
+        Vector<Bacteria> bacterias = new Vector<>();
+
+        int bound = 10;
+        int max = new Random().nextInt(bound - bound/2) + bound/2;
+
+        Infection infection = epidemic.bacterias().get(0).getInfection();
+        for(int i = 0; i < max; i++) {
+
+            Bacteria b = new Bacteria(infection);
+            //b.setInfection(infection);
+            bacterias.add(b);
+        }
+
+        return bacterias;
     }
 
     /**
@@ -157,8 +206,6 @@ public class EarthRegion extends WorldRegion{
 
         List<Location> borders = new ArrayList<>();
         Location areaLocation = targetArea.getLocation();
-
-        //System.out.println("target:" + areaLocation.x() + " " + areaLocation.y());
 
         // iterating through
         for(EarthZone area: areas) {
@@ -180,9 +227,13 @@ public class EarthRegion extends WorldRegion{
         return borders;
     }
 
+    /**
+     * Method invoked by NursingTeam after it acquires a set of vaccines.
+     * @param team
+     * @return
+     */
     public synchronized boolean vaccinate(NursingTeam team) {
 
-        System.out.println("Vaccinate");
         boolean teamIsRequired = false;
 
         if(medicalKnownAreas.size() == 0) {
@@ -234,10 +285,14 @@ public class EarthRegion extends WorldRegion{
 
         medicalKnownAreas.addAll(borders);
 
-        System.out.println("Vaccinated");
         return teamIsRequired;
     }
 
+    /**
+     * Method invoked only once, in the first iteration
+     * of a Civiliztion's lifecycle.
+     * @param inhabitants
+     */
     public synchronized void startDay(List<Inhabitants> inhabitants) {
 
         assert inhabitants != null;
@@ -250,20 +305,20 @@ public class EarthRegion extends WorldRegion{
         }
 
         civilizationAwake = true;
-        notifyAll();
+        broadcast();
 
-        System.out.println("started day");
     }
 
+    /**
+     * Method invoked by Civilization when it starts an iteration of its lifecycle.
+     * Entity awaits until more epidemics are detected.
+     * @param civilization
+     * @return
+     */
     public synchronized boolean dailyTasks(Civilization civilization) {
 
-        System.out.println("cheguei");
         while (noWorries) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            await();
         }
 
         boolean epidemic = false;
@@ -281,15 +336,26 @@ public class EarthRegion extends WorldRegion{
         return epidemic;
     }
 
+    /**
+     *
+     * * @return Region's areas.
+     */
     public List<EarthZone> getAreas() {
         return areas;
     }
 
+    /**
+     *
+     * Method invoked by the Civilization of this region when it is instantiated.
+     * @param civilization
+     */
     public synchronized void setInhabitants(Civilization civilization) {
         assert civilization != null;
 
         for(int i = 0; i < civilization.people().size(); i++) {
             areas.get(i).setPeople(civilization.people().get(i));
         }
+
+        assert civilization.people().size() > 0;
     }
 }

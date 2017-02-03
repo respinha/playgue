@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by espinha on 1/25/17.
+ * 1/25/17.
  */
 public class Civilization extends Population {
 
@@ -43,34 +43,25 @@ public class Civilization extends Population {
     @Override
     public void run() {
 
-        boolean epidemic;
         boolean livingPeople;
 
         region.startDay(people());
 
-        do {
-            epidemic = region.dailyTasks(this);
+        while (true){
+            region.dailyTasks(this);
 
-            if(epidemic) {
+            center.inform(this);
 
-                System.out.println("WATCH OUT");
-                try {
-                    center.inform(this);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            //livingPeople = false;
 
-            System.out.println("Civilization: ending lifecycle");
+            //System.out.println("Civilization: ending lifecycle");
             Globals.metronome().sync();
+        }
+    }
 
-            if(!epidemic) {
-                System.out.println("Epidemic OOOOVER");
-                epidemic = true;
-            }
-        } while (epidemic);
+    @Override
+    public void arun() {
+        run();
     }
 
     public List<Inhabitants> people() {
