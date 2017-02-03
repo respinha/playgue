@@ -12,13 +12,13 @@ import java.util.Random;
  */
 public class Globals {
 
-    private final static String[] symptomsPool = {"headache", "vomits", "nosebleed","heart failure"};
+    private final static String[] symptomsPool = {"headache", "vomits", "nosebleed","heart failure",
+            "headache2", "vomits2", "nosebleed2","heart failure2"};
 
     public synchronized static Metronome metronome() {
 
         // metronome implemented by mos@ua.pt
         // src: http://sweet.ua.pt/mos/pt.ua.concurrent/index.xhtml
-
         if(metronome == null)
             metronome = new Metronome(1500);
 
@@ -29,6 +29,7 @@ public class Globals {
         
         return symptomsPool[new Random().nextInt(symptomsPool.length)];
     }
+
     private static volatile Metronome metronome;
     public static void randomPause(int min, int max) {
 
@@ -54,6 +55,12 @@ public class Globals {
             case 3:
             default: return Color.orange.darker().darker();
         }
+    }
+
+
+    public static boolean evenRandom() {
+
+        return new Random().nextInt(2) == 0;
     }
 }
  

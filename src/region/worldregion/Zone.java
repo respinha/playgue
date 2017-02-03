@@ -5,13 +5,18 @@ import pt.ua.gboard.GBoard;
 import java.awt.*;
 
 /**
- * Created by espinha on 1/25/17.
- */
+ * Zone abstraction, as a Region's zone can be a specification of WorldRegion.
+ * */
 public abstract class Zone extends WorldRegion {
 
     protected final Point position;
     protected final Location location;
 
+    /**
+     *
+     * @param board
+     * @param location
+     */
     public Zone(GBoard board, Location location) {
 
         super(board);

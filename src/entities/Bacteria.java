@@ -13,23 +13,34 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Created by espinha on 11/21/16.
+ * 11/21/16.
  *
- * Objects of this type are created by any @link{Epidemic}
-
+ * Objects of this type are created by any Epidemic.
+ * Number of objects can multiply at each iteration of the epidemic's lifecycle.
+ * Main attributes are the current infection and the bacteria's lifespan.
  */
-public class Bacteria extends BiologicalEntity {
+public class Bacteria {
 
     private Infection infection;
     private int lifespan = 0;
 
-    public Bacteria(GBoard board, EarthRegion region) {
-        super(board, region);
+    /**
+     *
+     * @param infection
+     */
+    public Bacteria(Infection infection) {
 
+        assert infection != null;
+
+        this.infection  = infection;
         lifespan = new Random().nextInt(100 - 50) + 50;
+
+        assert lifespan >= 50 && lifespan <= 150;
     }
 
     public Infection getInfection() {
+
+        assert infection != null;
 
         return infection;
     }
@@ -44,6 +55,7 @@ public class Bacteria extends BiologicalEntity {
     public int lifespan() {
 
         assert lifespan >= 0;
+
         return lifespan;
     }
 
@@ -52,10 +64,5 @@ public class Bacteria extends BiologicalEntity {
             lifespan--;
 
         assert lifespan >= 0;
-    }
-
-    @Override
-    public void run() {
-
     }
 }

@@ -2,7 +2,7 @@ package region.laboratory;
 
 import com.sun.org.apache.regexp.internal.RE;
 import common.Globals;
-import entities.BiologicalEntity;
+import entities.LiveEntity;
 import entities.NursingTeam;
 import entities.ResearchTeam;
 import entities.Vaccine;
@@ -14,8 +14,9 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 
 /**
- * Created by rui on 1/24/17.
- */
+ * Subtype of Laboratory shared by different Medical Teams.
+ * NursingTeam and ResearchTeam communicate in a bidirecional producer-consumer system, implemented with two {@link TransferQueue}.
+ * */
 public class MedicalLaboratory extends Laboratory {
 
     //private Map<String, Vaccine> labVaccines;
@@ -36,9 +37,9 @@ public class MedicalLaboratory extends Laboratory {
     //public synchronized Map<String, Vaccine> acquireVaccines(NursingTeam nursingTeam) {
     public void acquireVaccines(NursingTeam nursingTeam) {
 
+        assert nursingTeam != null;
         // reporting known infections to the research team
 
-        System.out.println("Before");
         try {
             for(String symptom: nursingTeam.knownInfections()) {
                 pendingInfections.transfer(symptom);
@@ -49,14 +50,13 @@ public class MedicalLaboratory extends Laboratory {
             e.printStackTrace();
         }
 
-        System.out.println("After");
     }
 
-    public void develop(BiologicalEntity biologicalEntity) {
+    public void develop(LiveEntity liveEntity) {
 
-        assert biologicalEntity != null;
+        assert liveEntity != null;
 
-        ResearchTeam researchTeam = (ResearchTeam) biologicalEntity;
+        ResearchTeam researchTeam = (ResearchTeam) liveEntity;
 
         try {
 
@@ -69,6 +69,7 @@ public class MedicalLaboratory extends Laboratory {
                 pendingVaccines.transfer(vaccine);
             }
         } catch (InterruptedException e) {
+
             e.printStackTrace();
         }
     }

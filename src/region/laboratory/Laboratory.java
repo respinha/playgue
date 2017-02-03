@@ -1,23 +1,31 @@
 package region.laboratory;
 
-import entities.BiologicalEntity;
+import entities.LiveEntity;
 import pt.ua.gboard.GBoard;
 
 
 /**
- * Created by rui on 1/23/17.
- * Shared earthRegion
- * Receives updates from Bacterias and Cures
- * Provides information to status reporter
+ * Abstraction for any type of laboratory. Typically, it is expected to be a shared region.
  */
 
 public abstract class Laboratory {
 
     protected final GBoard board;
 
+    /*
+    *
+    * @param board
+     */
     public Laboratory(GBoard board) {
+
+        assert board != null;
+
         this.board = board;
     }
 
-    public abstract void develop(BiologicalEntity entity);
+    /**
+     *
+     * @param
+     */
+    public abstract void develop(LiveEntity entity);
 }

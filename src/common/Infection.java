@@ -18,6 +18,8 @@ public class Infection {
     private double severity;
 
     private BitSet dna;
+
+    
     /**
      * Constructor.
      *
@@ -29,7 +31,9 @@ public class Infection {
 
         severity = 1 + (5 - 1) * new Random().nextDouble();
 
-        dna = new BitSet();
+        //dna = new BitSet(3);
+
+
 
         assert symptom != null && !symptom.isEmpty() && severity <= 5 && severity >= 1;
 

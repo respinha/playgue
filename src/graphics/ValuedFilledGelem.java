@@ -5,7 +5,7 @@ import pt.ua.gboard.FilledGelem;
 import java.awt.*;
 
 /**
- * Created by espinha on 1/26/17.
+ * Subtype of {@link FilledGelem} which has an EarthZone's population density value.
  */
 public class ValuedFilledGelem extends FilledGelem {
 
@@ -14,6 +14,9 @@ public class ValuedFilledGelem extends FilledGelem {
     
     public ValuedFilledGelem(Color color, double v, int cellValue) {
         super(color, v);
+
+        assert color != null;
+        assert cellValue >= 0;
 
         this.cellValue = cellValue;
     }

@@ -6,7 +6,7 @@ import region.laboratory.MedicalLaboratory;
 import region.worldregion.EarthRegion;
 
 /**
- * Created by espinha on 1/28/17.
+ * 1/28/17.
  */
 public class ResearchTeam extends MedicalTeam{
 
@@ -15,9 +15,14 @@ public class ResearchTeam extends MedicalTeam{
         super(board, region, center,laboratory);
     }
 
-    @Override
+    /*@Override
     public void run() {
 
+
+    }*/
+
+    @Override
+    public void arun() {
         laboratory.develop(this);
     }
 }

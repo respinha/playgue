@@ -13,9 +13,13 @@ import java.util.*;
 import java.util.List;
 
 /**
- * Created by espinha on 1/25/17.
+ * Active entity composed by a group of multiplying bacterias.
+ * Lifecycle:
+ *      Develop in BacteriaLaboratory
+ *
+ *      Wait for population to awake and spread in a certain EarthZone and its borders.
  */
-public class Epidemic extends BiologicalEntity implements Runnable {
+public class Epidemic extends LiveEntity  {
 
     private final BacteriaLaboratory laboratory;
     private Vector<Bacteria> bacterias;
@@ -29,15 +33,19 @@ public class Epidemic extends BiologicalEntity implements Runnable {
         this.locations = new LinkedHashSet<>();
         locations.add(location);
 
-        System.out.println("Started thread: " + Thread.currentThread().getId());
+        //System.out.println("Started thread: " + Thread.currentThread().getId());
     }
 
 
-    @Override
+    /*@Override
     public void run() {
 
-        boolean running = true;
 
+    }*/
+
+    @Override
+    public void arun() {
+        boolean running = true;
 
         while(running) {
 

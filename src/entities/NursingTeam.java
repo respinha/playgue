@@ -2,6 +2,7 @@ package entities;
 
 import common.Globals;
 import common.Infection;
+import pt.ua.concurrent.CThread;
 import pt.ua.gboard.GBoard;
 import region.MedicalInformationCenter;
 
@@ -11,14 +12,26 @@ import region.worldregion.EarthRegion;
 import java.util.*;
 
 /**
- * Created by espinha on 1/25/17.
+ * 1/25/17.
+ *
+ * Inherits from MedicalTeam.
+ * Lifecycle:
+ *      watch an EarthRegion until some problem is detected
+ *      request Vaccine for each new symptom that is detected
+ *      vaccinate people in a certain area with the acquired vaccines.
  */
 public class NursingTeam extends MedicalTeam {
 
     private Map<String, Vaccine> vaccines;
     private Set<String> knownInfections;
 
-
+    /**
+     * Constructor.
+     * @param board
+     * @param region
+     * @param center
+     * @param laboratory
+     */
     public NursingTeam(GBoard board, EarthRegion region, MedicalInformationCenter center, MedicalLaboratory laboratory) {
         super(board, region, center,laboratory);
 
@@ -26,55 +39,78 @@ public class NursingTeam extends MedicalTeam {
         vaccines = new HashMap<>();
     }
 
+    /**
+     * Add an infection's symtpom to the list of known symptoms, if it doesn't exist
+     * @param infection
+     */
     public void newInfection(Infection infection) {
 
         assert infection != null;
 
+        int prevSize = knownInfections.size();
+
+        //System.out.println(infection);
         knownInfections.add(infection.symptom());
+
+        assert knownInfections.size() >= prevSize;
     }
 
+    /**
+     *
+     * @return Vaccines mapped by symtpoms
+     */
     public Map<String, Vaccine> vaccines() {
+
+        assert vaccines != null;
         return vaccines;
     }
 
+    /**
+     *
+     * @return Known infections.
+     */
     public Set<String> knownInfections() {
         return knownInfections;
     }
 
+    /**
+     * Lifecycle
+     */
     @Override
-    public void run() {
+    public void arun() {
 
-        System.out.println("Starting Medical Team lifecycle.");
 
-        boolean required = true;
-        while(required) {
+        //System.out.println("Starting Medical Team lifecycle.");
+
+        int time = 0;
+        while(true) {
 
             center.watchOver(this);
 
             laboratory.acquireVaccines(this);
 
             region.vaccinate(this);
-            if(!required) laboratory.close();
 
-            System.out.println("End of nursing cycle");
+            if(time++ == 10) {
+
+                if(Globals.evenRandom()) {
+
+                    new CThread(new NursingTeam(board,region, center, laboratory)).start();
+                }
+            }
+            //if(!required) laboratory.close();
+
+            //System.out.println("End of nursing cycle");
             Globals.metronome().sync();
         }
-
-        /**
-         * Lifecyle:
-         * createVaccines()
-         * while(conditionToRun) {
-         *      continent.vaccinatetargetArea);
-         *      laboratory.develop(vaccines)
-         *
-         *      conditionToRun = infectedPopulation > 0 && remaining life > 0
-         *      Globals.tick();
-         * }
-         *
-         *
-         */
     }
 
+    /**
+     * Add a new vaccine, developed by the research team.
+     * Vaccines are always attached to a known symptom.
+     * @param symptom
+     * @param vaccine
+     */
     public void newVaccine(String symptom, Vaccine vaccine) {
         vaccines.put(symptom, vaccine);
     }

@@ -1,9 +1,10 @@
-package graphics;
-
 import common.Globals;
 import entities.Civilization;
 import entities.NursingTeam;
 import entities.ResearchTeam;
+import graphics.MapInputHandler;
+import graphics.ValuedFilledGelem;
+import pt.ua.concurrent.CThread;
 import pt.ua.gboard.GBoard;
 import region.MedicalInformationCenter;
 import region.laboratory.BacteriaLaboratory;
@@ -18,15 +19,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Created by espinha on 12/5/16.
- */
 public class Main {
 
     public static void main(String[] args) {
 
         final GBoard gboard = new GBoard("Map", 20, 39, 1); //lines, columns, layers
-
 
         try {
             ArrayList<Location> locations = drawIslandMap(gboard);
@@ -43,16 +40,11 @@ public class Main {
             NursingTeam nursingTeam = new NursingTeam(gboard, region, center, medicalLaboratory);
             ResearchTeam researchTeam = new ResearchTeam(gboard,region,center,medicalLaboratory);
 
-            new Thread(nursingTeam).start();
-            new Thread(civilization).start();
-            new Thread(researchTeam).start();
+            new CThread(nursingTeam).start();
+            new CThread(civilization).start();
+            new CThread(researchTeam).start();
 
             // info pannel
-            /*JPanel content = new JPanel(new BorderLayout());
-            content.setBorder(BorderFactory.createBevelBorder(0));
-
-            gboard.frame().add(content);
-            gboard.frame().pack();*/
 
             gboard.pushInputHandler(new MapInputHandler(region, bacteriaLaboratory));
         } catch (IOException e) {
@@ -60,6 +52,12 @@ public class Main {
         }
     }
 
+    /**
+     * Draws a map with an island from a .txt file.
+     * @param board
+     * @return list of Locations that compose an EarthRegion.
+     * @throws IOException
+     */
     public static ArrayList<Location> drawIslandMap(GBoard board) throws IOException {
 
         BufferedReader reader = new BufferedReader(new FileReader("single_island.txt"));
