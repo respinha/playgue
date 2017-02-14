@@ -34,11 +34,7 @@ public class Globals {
     public static void randomPause(int min, int max) {
 
         int interval = new Random().nextInt(max - min) + min;
-        try {
-            Thread.sleep(interval);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+		wait(interval);
     }
 
     public static Color chooseColor(int number) {

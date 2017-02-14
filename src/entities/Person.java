@@ -7,7 +7,6 @@ import region.worldregion.EarthZone;
 import java.util.*;
 
 /**
- * 1/25/17.
  *
  * Object that composes a group of Inhabitants.
  * Main attributes are stamina (which can be reduced by an infection), current infection (which may not exist)

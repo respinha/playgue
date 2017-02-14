@@ -55,15 +55,9 @@ public class EarthRegion extends WorldRegion{
         assert locations != null;
 
         while (!civilizationAwake) {
-            /*try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
-            await();
+			await();
         }
 
-        // DEBUG #########
         int sum = 0, totalSum = 0, death = 0;
 
         Iterator<EarthZone> areaIterator = areas.iterator();
@@ -75,9 +69,6 @@ public class EarthRegion extends WorldRegion{
 
                 int line = (int) area.getLocation().x();
                 int col = (int) area.getLocation().y();
-
-                /*board.erase(line,col);
-                areaIterator.remove();*/
             }
             totalSum += area.people().size();
             for (Person person : area.people()) {
@@ -165,7 +156,6 @@ public class EarthRegion extends WorldRegion{
         }
 
         noWorries = false;
-        //notify();
         signal();
     }
 
@@ -188,7 +178,6 @@ public class EarthRegion extends WorldRegion{
         for(int i = 0; i < max; i++) {
 
             Bacteria b = new Bacteria(infection);
-            //b.setInfection(infection);
             bacterias.add(b);
         }
 

@@ -21,35 +21,31 @@ import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         final GBoard gboard = new GBoard("Map", 20, 39, 1); //lines, columns, layers
 
-        try {
-            ArrayList<Location> locations = drawIslandMap(gboard);
+		ArrayList<Location> locations = drawIslandMap(gboard);
 
-            EarthRegion region = new EarthRegion(gboard, locations);
-            MedicalInformationCenter center = new MedicalInformationCenter(gboard);
+		EarthRegion region = new EarthRegion(gboard, locations);
+		MedicalInformationCenter center = new MedicalInformationCenter(gboard);
 
-            Civilization civilization = new Civilization(gboard, region, center);
+		Civilization civilization = new Civilization(gboard, region, center);
 
 
-            BacteriaLaboratory bacteriaLaboratory = new BacteriaLaboratory(gboard);
-            MedicalLaboratory medicalLaboratory = new MedicalLaboratory(gboard);
+		BacteriaLaboratory bacteriaLaboratory = new BacteriaLaboratory(gboard);
+		MedicalLaboratory medicalLaboratory = new MedicalLaboratory(gboard);
 
-            NursingTeam nursingTeam = new NursingTeam(gboard, region, center, medicalLaboratory);
-            ResearchTeam researchTeam = new ResearchTeam(gboard,region,center,medicalLaboratory);
+		NursingTeam nursingTeam = new NursingTeam(gboard, region, center, medicalLaboratory);
+		ResearchTeam researchTeam = new ResearchTeam(gboard,region,center,medicalLaboratory);
 
-            new CThread(nursingTeam).start();
-            new CThread(civilization).start();
-            new CThread(researchTeam).start();
+		new CThread(nursingTeam).start();
+		new CThread(civilization).start();
+		new CThread(researchTeam).start();
 
-            // info pannel
+		// info pannel
 
-            gboard.pushInputHandler(new MapInputHandler(region, bacteriaLaboratory));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		gboard.pushInputHandler(new MapInputHandler(region, bacteriaLaboratory));
     }
 
     /**
